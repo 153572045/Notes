@@ -18,3 +18,4 @@
 3、克隆远程库到本地
 命令：$ git clone git@github.com:153572045/Notes.git
 克隆之后远程库的名字默认是origin，不管第一次推上去的时候命名为啥
+
