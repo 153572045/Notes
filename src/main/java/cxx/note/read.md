@@ -19,3 +19,7 @@
 命令：$ git clone git@github.com:153572045/Notes.git
 克隆之后远程库的名字默认是origin，不管第一次推上去的时候命名为啥
 
+
+二、知识点地址
+https://baijiahao.baidu.com/s?id=1675991555833901875&wfr=spider&for=pc   hashmap产生死循环原因
+
