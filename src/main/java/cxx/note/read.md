@@ -21,5 +21,5 @@
 
 
 二、知识点地址
-https://baijiahao.baidu.com/s?id=1675991555833901875&wfr=spider&for=pc   hashmap产生死循环原因
+https://blog.csdn.net/v123411739/article/details/78996181   hashmap学习
 
