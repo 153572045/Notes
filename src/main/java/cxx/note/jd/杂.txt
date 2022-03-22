@@ -1,0 +1,31 @@
+一、idea插件安装
+Scala
+Hocon
+Gerrit
+
+  			内部类：类中类
+
+
+使用内部类的主要原因主要有以下三种：
+
+1、内部类的方法可以访问该类所在作用域中的数据，包括私有数据，即可以访问创建它的外围类对象中的数据域
+
+2、内部类可以对同一个包中的其他类隐藏起来，因为Java中，同包内各类之间都是可见的。
+
+3、匿名内部类用来定义回调函数比较简洁。（在Lambda出来后被替代）
+
+针对第一点，其原理为编译器会为每一个内部类修改每一个构造器，增加一个外围类的引用。
+
+也可以显示指定内部类对象的外围类对象：
+
+正常情况下，在外围类内的方法直接实例化内部类： ActionListener listener = new Timepriner();
+等于  Actionlistener listener=this.new TimePrinter();
+可以指定其他外部类对象作为内部类的外围类引用：
+TalkingClock jabberer =new TalkingClock(1000,true);
+TalkingClock.TimePrinter listener=jabberer.new.TimePrinter();
+
+内部类的静态域都必须是final,因为每一个外部对象都会有一个单独的内部类实例，如果静态域不是final，那么就不唯一，这违背了静态域的初衷。
+
+局部类：方法中定义类，除了定义该类的代码可以访问，其他代码包括外围类的其他代码均无法访问
+
+局部类不能使用Public和Private等修饰符，它的作用域被限定在该方法中。

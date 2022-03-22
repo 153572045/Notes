@@ -1,0 +1,159 @@
+								Gson
+
+json分为对象类型和数组类型，Gson解析json的方式一般有两种：
+
+依赖库：
+<dependency>
+  <groupId>com.google.code.gson</groupId>
+  <artifactId>gson</artifactId>
+  <version>2.8.2</version>
+</dependency>
+
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+
+一、直接手工解析，指定key来获取值
+
+以String  json为例，其解析过程如下：
+"sex": '男',
+"hobby":["baskte","tennis"],
+"introduce": {
+"name":"tom",
+ "age":23
+}
+
+JsonParser parser = new JsonParser();  首先初始化一个解析器
+
+JsonElement类是gson库中的基本类型,是一个抽象类，根据具体的元素其子类有:JsonArray,JsonObject,JsonNull,JsonPrimitive
+JsonElement抽象类分别有各种判别接口，如element.isJsonObject(), 用来判别元素的具体类型
+JsonPrimitive是value的类型，用法如下:
+JsonObject jsonObject = new JsonObject();   // 手动创建一个空的JsonObject,
+jsonObject.add(key, new JsonPrimitive(value));  //value可以是各种类型  如String
+
+
+通过解析器获得一个JsonElement的接口如下：
+JsonElement element = parser.parse(json)；
+
+获取完一个基本元素后可用判别函数判定后转为具体的元素类型：
+JsonObject object = element.getAsJsonObject();  // 转化为对象
+JsonArray object = element.getAsJsonArray();  // 转化为数组
+String s =  element.getAsString();    //转化为具体的数据类型
+Int age = element.getAsInt();
+
+JsonElement get()接口是JsonObject对象获取数据域的接口,返回JsonElement，再调用以上的转化函数转为具体类型
+
+if (element.isJsonObject()) {
+JsonObject object = element.getAsJsonObject();
+String sex = object.get("sex").getAsString();     // 1. value为string时，取出string
+JsonArray hobbies = object.getAsJsonArray("hobby");    // 也可直接使用这类接口，不用get
+JsonObject introduce = object.getAsJsonObject("introduce");
+}
+
+JsonArray的使用：   可用get(i) 接口获取第I个元素，返回一个JsonElement。  有size()接口，返回数组的元素数量
+JsonArray hobbies = object.getAsJsonArray("hobby");
+for (int i = 0; i < hobbies.size(); i++) {
+            String hobby = hobbies.get(i).getAsString();
+            System.out.println("hobby:" + hobby);
+        }
+
+
+二、借助Java类，生成对应的Java对象来解析数据，即借助javabean配合Gson来解析Json数据
+
+
+1、以下面的json1为例，最简单的情况
+
+String json1 = "{\"name\":\"tom\",\"salary\":2999}";
+
+构建一个Java类：
+public class MyEntry {
+    private String name;
+    private int age;
+    public String address;
+    public int salary;
+    // getter、setter、toString
+}
+
+Gson gson1 = new Gson();
+MyEntry entry1 = gson1.fromJson(json1, MyEntry.class);    // 对于不完整的json 数据，映射了相应的java 类之后，转化得到的												java对象，未赋值的字段都是默认值
+
+fromJson（）接口的第一个参数有多种类型，可以是String，也可以是JsonElement
+
+
+属性名字不一致问题，可以用@SerializedName() 注解解决，比如在上面的Java类中增加以下注解，则salary实例域会被忽略，变成默认值
+
+@SerializedName("money")
+private String salary;
+
+
+2、若对象为复合对象，常见的情况是value为一个对象或数组，如下
+
+{
+  "name": "tom",
+  "age": 0,
+  "money": 2999,
+  "hobbies": [
+    "basket",
+    "tennis"
+  ],
+  "collections": {
+    "2": "paint",
+    "3": "mouse"
+  }
+}
+
+若value是数组，则在java类中也是数组，若是对象，则是map（k-v对）
+例如对于上面的json，其数组和对象部分在javabean中可以定义为以下：
+private List<String> hobbies;
+private Map<Integer, String> collections;
+
+定义String json2为上述json数据，  Bean为对应Java类，接下接口如下：
+
+Gson gson = new Gson();   //首先获取Gson对象
+
+Bean bean = gson.fromJson(json2,Bean.class);
+
+
+3、若json是数组
+
+String json2 = "[\"apple\", \"pear\", \"banana\"]";
+
+Gson gson2 = new Gson();
+String[] fruits = gson2.fromJson(json2, String[].class);
+
+若想解析成List类型，则参考第4点，解析过程如下
+String json2 = "[\"apple\", \"pear\", \"banana\"]";
+Gson gson2 = new Gson();
+List<String> fruitList = gson2.fromJson(json2, new TypeToken<List<String>>(){}.getType());
+
+
+
+4、泛型的情况  （重点）
+
+
+对于json的数据格式相近但数据类型会变化的情况，应该使用泛型，例如有可能出现以下情况：
+
+
+传过来的数据的data字段有可能是对象也有可能是数组
+{"code":"0","message":"success","data":{}}
+{"code":"0","message":"success","data":[]}
+
+则我们可以定义以下Javabean
+
+public class Result<T>{
+    public int code;
+    public String message;
+    public T data;
+}
+
+若data中的主要数据跟上面的MyEntry一致，当data是对象的时候，其解析过程如下
+
+Gson typeGson1 = new Gson();
+Type type1 = new TypeToken<Result<MyEntry>>(){}.getType();
+Result<MyEntry> result1 = typeGson1.fromJson(typeJson1, type1);
+
+若data是MyEntry对象数组的时候，解析过程如下
+
+Gson typeGson2 = new Gson();
+Type type2 = new TypeToken<Result<List<MyEntry>>>(){}.getType();
+Result<List<MyEntry>> result2 = typeGson2.fromJson(typeJson2, type2);

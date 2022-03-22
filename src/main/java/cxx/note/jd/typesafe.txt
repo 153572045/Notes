@@ -1,0 +1,99 @@
+						Typesafe.config
+
+
+Typesafe的Config库，纯Java写成、零外部依赖、代码精简、功能灵活、API友好。支持Java properties、JSON、JSON超集格式HOCON以及环境变量。它也是Akka的配置管理库。
+
+<dependency>
+    <groupId>com.typesafe</groupId>
+    <artifactId>config</artifactId>
+    <version>1.2.1</version>
+</dependency>
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+
+一、获取config对象的常用接口
+
+1、ConfigFactory.load()
+默认加载在main.resources目录下的application.conf，若没有则加载application.json，还没有再加载application.properties
+后两种文件只支持单一的数据格式，前者只能支持json格式，后者只能是properties格式，而conf两者都行，包括hocon。
+
+2、ConfigFactory.load(fileName)
+加载指定文件名的文件，文件也须放在resources目录下。
+
+3、ConfigFactory.parseFile(File file)
+最灵活的接口，相比前两种，不会继承一些系统的配置
+
+二、Config对象的简单使用
+
+1、最简单的方式为直接获取相应的值
+Config config = ConfigFactory.load(fileName);
+String result = config.getString(String path);
+Path为节点名+点+属性名
+
+比如：
+host{
+  ip = “127.0.0.1 “
+  port = 2282
+  other = {
+	name = “chen”
+  }
+}
+
+String result = config.getString(“host.ip”);
+
+注: hocon文件除了以上述方式定义一个节点外，还能不要大括号，如直接以下的方式
+host.ip = “127.0.0.1”
+host.port = 2282
+
+result也可以继续是Config类型
+Config other = config.getConfig(“host.other”);
+
+
+三、Config对象的合并
+
+1、合并两个config对象
+
+Config a=…
+Config b=…
+a.withFallback(b);    合并a和b，如果有相同的key，以a为准
+a.withOnlyPath(String path)  只取a里的path下的配置，一般是某个节点
+a.withoutPath(String path)    只取a里除path外的配置
+
+例子：
+Config c = a.withOnly(“host”).withFallback(b)    c中的配置是a中host的配置和b中除host之外的全部配置的合并。
+
+
+
+四、Config对象的遍历
+
+Config对象调用entrySet()可以和Map一样获取一个条目set，一般用法如下：
+
+ for (Map.Entry<String, ConfigValue> e : config.entrySet()){ 		e.getkey()          //获取key值，即conf文件中节点的某个属性
+		e.getValue()      //获取ConfigValue，ConfigValue是一个包装类型，
+						valueType()可以获取该对象的类型，是一个枚举类型
+						unwrapped()可以对configValue对象进行解包，得到基本数据类型
+						如if(e.getValue().valueType() == ConfigValueType.STRING){
+								String result = e.getValue().unwrapped()
+						}
+}
+
+
+
+五、其他用法，需进一步学习
+
+1、属性包括${}引用的Config对象在构造时，要用resolve()方法，如
+Config config = ConfigFactory.parseFile(file).resolve();
+
+注：resolve方法要在构造config对象时就调用，不能在获取子Config时才调用。
+
+
+
+
+
+
+
+
+
+

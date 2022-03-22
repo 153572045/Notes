@@ -1,0 +1,60 @@
+						依赖注入（GUICE）
+
+一、控制反转（IOC）：获得依赖对象的方式反转了，主动变为被动，控制反转是一种思想，而依赖注入则是控制反转的一种实现。
+￼
+
+
+
+所以控制反转IoC(Inversion of Control)是说创建对象的控制权进行转移，以前创建对象的主动权和创建时机是由自己把控的，而现在这种权力转移到第三方，比如转移交给了IoC容器，它就是一个专门用来创建对象的工厂，你要什么对象，它就给你什么对象，有了 IoC容器，依赖关系就变了，原先的依赖关系就没了，它们都依赖IoC容器了，通过IoC容器来建立它们之间的关系。
+这是我对Spring的IoC(控制反转)的理解。DI(依赖注入)其实就是IOC的另外一种说法，DI是由Martin Fowler 在2004年初的一篇论文中首次提出的。他总结：控制的什么被反转了？就是：获得依赖对象的方式反转了。
+
+
+二、依赖注入框架GUICE
+
+
+<dependency>
+    <groupId>com.google.inject</groupId>
+    <artifactId>guice</artifactId>
+    <version>4.0</version>
+</dependency>
+
+import javax.inject.Singleton;
+
+import com.google.inject.Guice;
+import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+
+
+	与Spring等框架以XML配置文件的方式去实现装配规则，Guice的装配规则是以代码的形式实现的，Guice Module在一个大型项目中也是非常的简洁，一般只会占用几十行代码，可读性比XML强。
+
+
+1、基本用法
+
+使用Guice创建一个注射器Injector，然后从Injector拿到你想要的对象就可以了，Guice会自动装配依赖树。Guice的启动速度是很快的，在一个大型应用中，Guice装配所有的模块决不会超过1s。
+
+例子：Injector injector = Guice.createInjector();
+	  Sample sample = injector.getInstance(Sample.class);
+
+具体用法参考：https://zhuanlan.zhihu.com/p/32299568
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
