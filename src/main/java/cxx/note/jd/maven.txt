@@ -1,0 +1,61 @@
+									Maven
+
+未学习部分：打包   多模块项目
+
+
+简介：  项目管理工具，统一了jar包依赖和项目的目录结构，可以构建多模块项目（将一个项目拆成多个模块）
+
+一、Maven的目录结构:
+1、pom文件
+2、src文件，包括了main和test(测试类)，分别包含了源码(java文件)和资源(resource)
+
+Maven包括了本地仓库和远程仓库，当项目加入依赖jar包或插件时，先从本地中找，找不到再到远程仓库下载到本地仓库，因此所有的依赖项都从本地仓库中获取。
+
+远程仓库有三种：
+1、中央仓库：默认配置下，maven下载jar包的地方，服务器在国外，下载速度慢
+2、私服：局域网仓库，某个公司内部的仓库，用于代理外部的仓库，其地址一般指向中央仓库，起到缓存的作用，其工作原理和本地仓库类似，内部的项目还可以部署到私服上供内部使用
+3、其他公共库：例如阿里仓库，工作原理和私服差不多。
+
+
+	在maven目录下有一个settings文件，可以用这个文件修改中央仓库的地址，比如将国外地址改成阿里镜像，也可以
+修改本地仓库的地址，被pom文件依赖进来的项目(jar包)首先在本地仓库中查找并加载，查找不到的话就去远程中央仓库
+下载到本地仓库再加载进来。
+
+修改本地地址的配置为：
+<localRepository>/Users/chenxiaoxian7/myProject/repository</localRepository>
+默认地址: ${user.home}/.m2/repository
+是settings的子元素
+Settings文件的设置： 左上角IDtelliJ IDEA—>preferences—>搜索maven
+
+修改远程中央仓库镜像的配置为：
+<mirror>
+  <id>nexus-aliyun</id>
+  <mirrorOf>central</mirrorOf>
+  <name>Nexus aliyun</name>
+  <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+</mirror>
+
+是<mirros>的子元素，<mirros>是settings的子元素
+
+
+maven常用命令:
+
+mvn -version            显示版本信息
+mvn clean                 清理项目生产的临时文件，一般是模块下的target目录
+mvn compile             编译源代码，一般编译模块下的src/main/java目录
+mvn package            项目打包工具，会在模块下的target目录生成jar或war等文件
+mvn test                    测试命令，或执行src/test/java下junit的测试用例
+mvn install                 将打包的jar/war文件复制到你的本地仓库中，供其他模块使用
+mvn deploy                将打包的文件发布到远程仓库，供其他人员进行下载依赖
+mvn site                     生成项目相关信息网站
+mvn dependecy:tree 打印出项目的整个依赖树
+mvn eclipse:eclipse   将项目转化为Eclipse项目
+mvn archetype:generate  创建Maven的普通java项目
+
+
+
+创建普通maven项目
+
+New Project—>Maven—>maven-archetype-quickstart
+
+Maven依赖的基本坐标包括  ： groupId,artifactId,version  ,maven根据坐标才能找到对应依赖项

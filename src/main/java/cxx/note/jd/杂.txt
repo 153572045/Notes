@@ -1,0 +1,69 @@
+一、idea插件安装
+Scala
+Hocon
+Gerrit
+
+二、工具
+https://www.bejson.com/explore/index_new/    json解析网址
+https://tool.chinaz.com/tools/urlencode.aspx  urlEncode解码
+
+三、推荐系统
+https://zhuanlan.zhihu.com/p/103754069
+http://www.woshipm.com/user-research/3780886.html    画像
+https://zhuanlan.zhihu.com/p/115690499?from_voters_page=true   召回
+http://www.woshipm.com/data-analysis/4542994.html   召回排序
+
+四、技术栈
+https://www.zhihu.com/search?q=guice%20%E8%80%81%E9%92%B1&utm_content=search_history&type=content   Guice
+https://www.jianshu.com/p/419efe983cb2   Protobuf
+https://www.jianshu.com/p/75a50aa0cad1   Gson
+https://developers.google.com/protocol-buffers/docs/javatutorial   pb官方文档
+https://www.liaoxuefeng.com/wiki/1252599548343744/1255943660631584   廖雪峰java
+https://github.com/lightbend/config/blob/master/HOCON.md    hocon官方文档
+https://github.com/google/guice/wiki       guice官方文档
+http://grpc.mydoc.io/?t=60134    grpc中文官方文档
+http://www.ruanyifeng.com/blog/2016/08/http.html    http阮一峰
+https://www.zhihu.com/question/19732473/answer/20851256   阻塞和同步异步的区别
+https://blog.csdn.net/sinat_21843047/article/details/80297951     控制反转和依赖注入
+https://www.cnblogs.com/hhhshct/p/8523697.html    Java实现http请求
+https://blog.csdn.net/luoww1/article/details/79992162     异步的AsyncHttpClient使用详解
+https://www.cnblogs.com/dolphin0520/p/3920373.html    java并发文章
+https://www.zhihu.com/question/433003386   CompletableFuture中whenComplete()和thenApply() 区别?
+https://blog.csdn.net/mrliuzhao/article/details/89453082    java.nio.ByteBuffer用法小结
+https://www.jianshu.com/p/fcc0b5a57d7b      Guava ImmutableMap
+https://blog.csdn.net/qianshangding0708/article/details/98348827    Guava Cache用法介绍
+https://www.jianshu.com/p/3d1c9ffb0a28      Builder模式
+https://www.runoob.com/design-pattern/singleton-pattern.html    设计模式
+https://blog.csdn.net/mulinsen77/article/details/84583716    AQS
+
+
+
+
+
+
+  			内部类：类中类
+
+
+使用内部类的主要原因主要有以下三种：
+
+1、内部类的方法可以访问该类所在作用域中的数据，包括私有数据，即可以访问创建它的外围类对象中的数据域
+
+2、内部类可以对同一个包中的其他类隐藏起来，因为Java中，同包内各类之间都是可见的。
+
+3、匿名内部类用来定义回调函数比较简洁。（在Lambda出来后被替代）
+
+针对第一点，其原理为编译器会为每一个内部类修改每一个构造器，增加一个外围类的引用。
+
+也可以显示指定内部类对象的外围类对象：
+
+正常情况下，在外围类内的方法直接实例化内部类： ActionListener listener = new Timepriner();
+等于  Actionlistener listener=this.new TimePrinter();
+可以指定其他外部类对象作为内部类的外围类引用：
+TalkingClock jabberer =new TalkingClock(1000,true);
+TalkingClock.TimePrinter listener=jabberer.new.TimePrinter();
+
+内部类的静态域都必须是final,因为每一个外部对象都会有一个单独的内部类实例，如果静态域不是final，那么就不唯一，这违背了静态域的初衷。
+
+局部类：方法中定义类，除了定义该类的代码可以访问，其他代码包括外围类的其他代码均无法访问
+
+局部类不能使用Public和Private等修饰符，它的作用域被限定在该方法中。

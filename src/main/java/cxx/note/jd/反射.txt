@@ -1,0 +1,71 @@
+								反射
+
+
+每个类都会被维护一个类对象，Class的对象，这些对象各自描述对应类的结构信息。
+
+获取类对象的方法有  1、object.getClass()   2、class.class    3、Class.forName(String)
+
+反射的作用大概有以下几种：
+
+一、分析类—检查类的结构
+
+除了Class类，反射库中还有 Field、Method和Constructor三个类，这4个类都有getName()方法，类对象有getSimpleName()方法。
+getModifiers()返回一个整形，表示该域或方法的访问级别，可以用Modifier类中isPublic,isPrivate等静态方法解析。更直接的方法可以用Modifier.toString()方法直接打印出来。
+
+1、Class:   getFields,getMethods和getConstructors三个方法只返回访问级别为public的和父类的共有成员数组，getDeclareFields,getDeclareMethods和getDeclaredConstructors返回类中声明的的全部成员数组，但不包含父类成员。getDeclaredField(String name)获取指定名称的域成员，需要解决检查异常(NoSuchFieldException)
+getSuperclass()返回超类的类对象
+类对象.newInstance()  创建一个由默认构造器产生的实例，若没有默认构造器，则抛出异常。
+若需要创造由非默认构造器产生的实例，则需要用Constructor对象的newInstance()方法。
+常见接口：
+1、isArray()判断是否为一个数组
+2、getComponentType()  若非数组则返回null，数组则返回元素类型的class对象
+
+
+2、Field：  getType()返回该数据域所属类型的Class对象
+
+3、Method:   getReturnType() 返回该方法返回数据类型的Class对象，getParameterTypes() 返回参数类型Class对象的数组
+
+4、Constructor:  除了没返回类型，参数类型操作和Method类一样
+
+
+二、在运行时分析对象—看数据域的实际内容，即看到在编译时还不清楚的内容
+
+1、运行时访问某个对象的域
+
+首先获取类对象的Field对象，然后Field对象调用get(具体的对象)可以获取具体对象该域的值，该值为Object，若该域的数据
+类型为基本类型如Int,则自动封装成Integer。
+Class c1= harry.getClass();
+Field f=c1.getDeclaredField(“name”)
+Object v=f.get(harry)
+
+2、设置某个对象的域
+f.set(obj,value)
+
+3、异常问题
+调用f.get(obj)函数时需要解决IllegalAccessException异常
+
+
+三、编写泛型数组—动态创建数组
+
+
+创建数组时指定的类型之后无法进行改变，Manager的数组可以转为Object[],之后可以转换回来，但是反之不行。
+
+因此可以利用反射库（java.lang.reflect）中的Array类来创建数组
+
+Array.newInstance(componentType,newLength)可以创建一个componentType类型的数组，进而实现泛型复制数组
+配合System.arraycopy(源数组，源数组起始位置，新数组，新数组起始位置，长度)函数复制数组。
+
+基本类型数组如int[]无法转为对象数组Object[],因此在构建函数时返回类型和参数类型用Object。
+
+
+
+四、调用任何方法
+
+利用反射的中的Method类可以调用任意方法，类似C++中的函数指针或C#中的委托，使用方法有以下两个步骤：
+
+1、首先获取具体的Method对象，可以调用getDeclareMethods方法获得一个数组后进行查找，也可以调用getMethod()方法获取，其签名为： Method getMethod(String name,Class… parameterTypes),其中第二个参数为相应方法的参数对应的类对象。
+例如：Method m1=Employee.class.getMethod(“raiseSalary”,double.class)
+
+2、调用Method对象的invoke()方法，其签名为：Object invoke(Object obj,Object… args),其中第一个参数为隐式参数，如果是静态方法则传递null，第二个是该方法的显示参数，若没参数则忽略。
+
+e.g  String n =(String)m1.invoke(harry) ，注意将最后的结果进行类型转换。

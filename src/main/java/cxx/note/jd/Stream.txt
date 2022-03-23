@@ -1,0 +1,119 @@
+								Stream(流)
+
+一、流的特性
+
+1、流不存储实际元素，这些元素一般存储在底层的集合中，或者按需生成
+2、流的操作不会改变数据源，只会产生一个新的流
+3、惰性操作，当需要结果时才会执行，而且按需执行，因此可以操作无限流
+
+二、流的创建
+
+1、使用Collection接口的stream()方法创建，并行流用parallelStream()创建
+2、Stream.of()接口创建，of方法有可变长参数，因此可以入参数组或多个引元
+3、Stream.empty()创建空流
+4、创建无限流： （1）Stream.generate(()->“Echo”) ， 该接口接受一个Supplier<T>接口的对象  该函数式接口里面的函数为：T get()
+(2)  Stream.iterate(seed,运用在seed上的函数)
+
+三、流的转换
+
+1、filter(Predicate<T>)   只返回true的元素
+2、map(Function<? super T, ? extends R>)    该函数式接口的抽象方法为   R apply(T)   e.g   map(s->s.substring(0,1))
+map(String::toLowerCase)
+3、flatMap   类似map  摊平由流构成的流
+4、distinct()  去重，返回顺序和之前保持一致
+5、peek(Consumer<? super T> action)  产生和原流相同的流，但每获取一个元素都会调用一个函数，接口内函数为
+void accept(T t)
+
+四、简单的约简
+
+即将流转换为可以在程序中使用的非流值，是一种终结操作
+
+这些方法返回一个Optional<T>
+
+1、count()  返回元素数量
+2、max(Comparator<? super T> comparator)
+3、min(Comparator<? super T> comparator)
+4、findFirst()  返回非空集合中的第一个元素，经常和filter组合使用：
+Optional<String> startsWithQ = words.filter(s->s.startsWith(“Q”)).findFirst();
+5、findAny()  返回任何一个元素
+Optional<String> startsWithQ = words.parallel().filter(s->s.startsWith(“Q”)).findAny();
+6、anyMatch(),allMatch(),noneMatch()：返回boolean:
+Boolean B = words.parallel().anyMatch(s->s.startsWith(“Q”))
+
+五、Optional
+
+Option<T>对象是一种对象包装对象，要么包装了T对象，要么没包装任何对象,null
+
+正确的使用方式：
+
+1、在值不存在的时候使用替代物
+
+主要有三个接口：
+
+（1）String result = optionalString.orElse(“chen”);    若值不存在则返回指定值
+  (2)  String result = optionalString.orElseGet(()->“chen”);    若值不存在则使用给定函数的返回值
+（3）String result = optionalString.orElseThrow(IllegalStateException::new)   若值不存在则抛出异常
+
+2、在值存在的时候才消费该值
+
+接口： ifPresent(Consumer<? Super T>) 接口内函数为void accept(T t)
+optionalValue.ifPresent(v->Process v)  若值存在则执行函数，若值不存在则什么也不做，该函数不返回任何值，若需要结果，则用map()接口：
+Optional<Boolean> added = optionalValue.map(results::add);
+若optionalValue中存在值则added中是true或false,取决于map接口中的函数运行情况，若值不存在，则added为空。空的optional
+
+错误的使用方式：直接使用get()接口
+
+Optional对象的get()接口可以返回包装在容器内的值，但是如果值空的话会抛出一个异常
+isPresent()返回一个boolean，可以报告某个Optional对象里面是否有值，但是和直接对对象T进行判空没啥区别.
+
+创建Optional值：
+
+Optional.of(obj)    直接创建，若obj为空则抛出异常
+Optional.empty()   创建一个空的Optional对象
+Optional.ofNullable(ojb)   该函数会在obj为空的时候调用第二个函数，否则调用第一个
+
+
+使用Optional中值的方法：  flatMap()
+
+该接口可以进行链接式操作：
+
+E.g   Optional<U> result = s.f().flatMap(T::g);
+例子中s.f()会产生一个Optional<T>的结果，由于无法对T直接调用函数，如g，则可以利用flatMap(T::g),直接调用，可以连成串进行调用，若中间有一个过程返回empty，则整个结果返回一个空的Optional
+
+
+六、收集结果
+
+stream.forEach(System.out::printLn)    对流中每个元素执行一次函数
+
+更多的场景需要将流中的元素收集到数据结构中。
+
+1、toArray接口，返回一个Object[]类型的数组，若需返回某种特定类型的数组，则需传递一个数组构造器
+String[]  result = stream.toArray(String[]::new);
+
+2、利用Collectors提供的工厂方法，产生收集器，以下为两个常用的用法，更多收集器可查资料
+List<String> result = stream.collect(Collectors.tolist());
+Set<String> result = stream.collect(Collectors.toset());
+String result = stream.collect(Collectors.joining())   连接流中所有元素，可以加分隔符如joining(“,”)
+
+3、收集到映射表中
+
+
+(一)、简单的收集方式：
+
+Map<Integer,String> idToName = people.collect(Collectors.toMap(Person::getId,Person::getName));
+通常情况值应该是实际的元素，可以用Function.identity() 来获取。
+
+toMap()可以用第三个参数，用来处理键冲突，是一个函数式接口  (existingValue,newValue)- > existingValue
+
+(二)、群组和分区
+
+接口：  Collectors.groupingBy()  和   Collectors.partitioningBy()
+
+例子： Map<String,List<Local>> countryToLocales = locales.collect( Collectors.groupingBy(Local::getCountry))
+
+其中Local::getCountry为分类函数，当分类函数为断言函数时，即返回值为boolean的函数，用partioningBy()函数更加高效。
+
+例子：Map<Boolean,List<Local>> englishAndOtherLocales = locales.collect(
+Collectors.partitioningBy(l - > l.getLanguage().equals(“en”)));
+
+List<local> englishLocales = englishAndOtherLocales.get(true);

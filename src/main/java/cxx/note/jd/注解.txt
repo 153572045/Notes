@@ -1,0 +1,84 @@
+						注解（Annotation）
+
+一、注解的作用：
+
+1、不是程序本身，可以对程序作出解释。(注释是给人看的，注解还可以给程序看)
+2、可以被其他程序读取（如编译器，或者使用反射读取）
+
+使用的方式：
+
+可以附加在package,class,method,filed等上面，相当于给它们添加了额外的辅助信息，我们可以通过反射
+机制编程实现对这些元数据的访问
+
+
+二、常用内置注解
+
+1、@Override
+
+2、@Deprecated   已废弃
+
+3、@SuppressWarnings    镇压警告    需要一个参数@SuppressWarnings(“all”)
+
+
+三、元注解    ：注解其他注解
+
+4个标准元注解，用来提供对其他annotation类型作说明
+
+1、@Target   表示注解能用在哪些地方  如用在方法上： ElementType.METHOD
+@Target(ElementType.METHOD),多个的时候@Target(value = {ElementType.METHOD,ElementType.FIELD})
+
+2、@Retention   表示注解生效的范围，有三个级别，分别是SOURCE，CLASS，RUNTIME ，基本都用RUNTIME
+runtime>class>source
+如@Retention(value = RetentionPolicy.RUNTIME)
+
+3、@Documented   表示是否将我们的注解生成在JAVAdoc中
+
+4、@Inherited  表示子类可以继承父类中该注解
+
+
+四、注解的定义
+
+如下例子：
+
+@Target({ElementType.TYPE,ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Interface Myannotation{
+	String name()    default  “chen” ;
+	int  age() ;
+}
+
+注解中若定义了参数，除非有默认值 如上述的name参数，不然在使用的时候必须提供。
+@Myannotation(age = 18,name = “xian”)
+
+
+如果只有一个参数的情况下，参数名字命名为value,则在使用该注解的时候可以不指定参数名字，如下
+
+@Target({ElementType.TYPE,ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Interface Myannotation2{
+	String value()
+}
+
+使用的时候@Interface Myannotation2(“chen”)
+
+
+五、利用反射机制使用注解
+
+本质是拿某个类上注解的信息，然后再根据这些信息进行特定的操作
+
+
+示例如下：
+
+如果上面的注解Myannotation2用在Class c1上
+
+Annotation[] annotations = c1.getAnnotations();   获取一个类的所有注解
+
+Annotation annotation = c1.getAnnotation(Myannotation1.class);   获取特定的注解
+也可以
+Myannotation2 annotation = （Myannotation2）c1.getAnnotation(Myannotation2.class);   获取特定的注解
+
+String value = annotation.value();
+
+在域上的用法也一样
+
+如有某个Field f，用法跟c1一样
