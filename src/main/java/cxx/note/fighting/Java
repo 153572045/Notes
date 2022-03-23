@@ -1,0 +1,4 @@
+
+Java技术体系包括了  java语言，各硬件平台上虚拟机的实现，Class文件格式，Java类库API，以及第三方库
+其中 java语言，类库和虚拟机构成JDK，是Java程序开发的最小环境
+java虚拟机和java SE API子集构成JRE，是java程序运行的标准环境
