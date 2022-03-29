@@ -39,6 +39,8 @@ https://github.com/ustc-zzzz/HOCON-CN-Translation/blob/master/HOCON.md#%E9%87%8D
 
 
 https://github.com/racc/typesafeconfig-guice   typesafeconfig
+https://www.nowcoder.com/discuss/experience?tagId=639&order=1&companyId=0&phaseId=0   牛客面经
+https://github.com/Snailclimb/JavaGuide     git面经
 
 
 
