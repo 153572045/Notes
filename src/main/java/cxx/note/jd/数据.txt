@@ -1,0 +1,449 @@
+bw.Broadrequest:
+pid: 621525
+expid: 100
+handlerId: "app-jx-material"
+user {
+  location: "1,72,4137,0"
+  uuid: "oCwKwuJsRXxyuBcSWs0IhN_u07Vk"
+  ip: "11.54.44.132"
+  userAgent: "Apache-HttpClient/4.2.6 (java 1.5)"
+}
+requestId: "fda2607eb027d0ffa604490eb9eef882dcd02448"
+limit: 200
+testTraffic: true
+dbgQuery {
+  degLv: INFO
+}
+target {
+}
+params {
+  key: "unlimit"
+  value: "true"
+}
+params {
+  key: "SkuExposureReweightRuler.beta"
+  value: "0.5"
+}
+params {
+  key: "sku.RePurchaseRbcidFilterRuler.rulerSwitch"
+  value: "false"
+}
+params {
+  key: "PsRanker.rankModules.SKU.modelName"
+  value: "p_mlr_20200421_7304_800"
+}
+params {
+  key: "skip"
+  value: "0"
+}
+params {
+  key: "SkuExposureReweightRuler.alpha"
+  value: "0.5"
+}
+params {
+  key: "SkuExposureReweightRuler.newTable"
+  value: "nl_jxsucaihp_sku_exposure"
+}
+params {
+  key: "uuid.UserBehaviorRequestModifier.behaviorTypes"
+  value: "[clkgp, cartgp, skygp, ordgp, clkhigp]"
+}
+params {
+  key: "refreshCache"
+  value: "false"
+}
+params {
+  key: "handlerId"
+  value: "app-jx-material"
+}
+params {
+  key: "p13n.SmartStoreSkuIndexRecaller.featureConfigs"
+  value: "{JX_CID3_LONGTERM_PG = {name = recsys_p_u_to_c3_pg,weight = 1.0,count = 30},JX_C1_PW_LONGTERM_PG = {name = recsys_p_u_to_c3_pg,weight = 1.0,count = 30}, JX_CID3_3D = {name = nl_jxCid3Weight_3d,weight = 1.0,count = 30}, JX_C1_PW_3D = {name = nl_groupPurchasePWWeight_3d,weight = 1.0,count = 30}}"
+}
+params {
+  key: "forceToExperimentId"
+  value: "0"
+}
+params {
+  key: "PsRanker.rankModules.SKU.featureToken"
+  value: "token_featurelog_hp_clk_ord_pg_main_price-800"
+}
+params {
+  key: "leastEffort"
+  value: "false"
+}
+params {
+  key: "shutdown_feature_log"
+  value: "true"
+}
+params {
+  key: "expId"
+  value: "100"
+}
+params {
+  key: "randomOrder"
+  value: "true"
+}
+params {
+  key: "overallL4Switch"
+  value: "true"
+}
+params {
+  key: "filterOrder"
+  value: "true"
+}
+params {
+  key: "evictFromLogAnalysis"
+  value: "false"
+}
+params {
+  key: "SoftStockFilterRuler.rulerSwitch"
+  value: "true"
+}
+params {
+  key: "OrderFilterRbcidInfoRequestModifier.ordBehaviorType"
+  value: "ordgp"
+}
+params {
+  key: "PsRanker.rankModules.SKU.filterName"
+  value: "\"PurchasedFilter,StockFilter,PinGouPriceFilter,UserDislikeChenFilter,PinGouRegionRestrictFilter\""
+}
+params {
+  key: "uuid.UserProfileRequestModifier.uuidModels"
+  value: "[recsys_p_u_to_c3_pg, nl_jxCid3Weight_3d, nl_groupPurchasePWWeight_3d, nl_jxsucaihp_sku_exposure]"
+}
+params {
+  key: "forceNoExperiment"
+  value: "false"
+}
+params {
+  key: "hint"
+  value: "{\"ci\":\"5\",\"gender\":0,\"page\":1,\"pi\":\"pgMiniProgram\",\"replace_pid\":9101,\"skuFilter\":0,\"tab_id\":[28037414],\"user_layer\":\"\",\"uuid\":\"60027691361155341\",\"visitkey\":\"60027691361155341\"}"
+}
+params {
+  key: "SkuExposureReweightRuler.rulerSwitch"
+  value: "true"
+}
+params {
+  key: "predictorSkipHbase"
+  value: "false"
+}
+params {
+  key: "recRootCacheEnable"
+  value: "false"
+}
+params {
+  key: "cdnCacheTime"
+  value: "5"
+}
+params {
+  key: "orderFilterHistoryOnly"
+  value: "false"
+}
+params {
+  key: "predictorCacheTime"
+  value: "86100"
+}
+encode: EC_UTF8
+
+---------------------------------------------
+bw.modifiedbroadwayrequest
+
+pid: 621525
+expid: 100
+handlerId: "app-jx-material"
+user {
+  location: "1,72,4137,0"
+  uuid: "oCwKwuJsRXxyuBcSWs0IhN_u07Vk"
+  ip: "11.54.44.132"
+  userAgent: "Apache-HttpClient/4.2.6 (java 1.5)"
+}
+requestId: "fda2607eb027d0ffa604490eb9eef882dcd02448"
+limit: 200
+testTraffic: true
+dbgQuery {
+  degLv: INFO
+}
+target {
+}
+params {
+  key: "unlimit"
+  value: "true"
+}
+params {
+  key: "SkuExposureReweightRuler.beta"
+  value: "0.5"
+}
+params {
+  key: "sku.RePurchaseRbcidFilterRuler.rulerSwitch"
+  value: "false"
+}
+params {
+  key: "PsRanker.rankModules.SKU.modelName"
+  value: "p_mlr_20200421_7304_800"
+}
+params {
+  key: "skip"
+  value: "0"
+}
+params {
+  key: "SkuExposureReweightRuler.alpha"
+  value: "0.5"
+}
+params {
+  key: "SkuExposureReweightRuler.newTable"
+  value: "nl_jxsucaihp_sku_exposure"
+}
+params {
+  key: "uuid.UserBehaviorRequestModifier.behaviorTypes"
+  value: "[clkgp, cartgp, skygp, ordgp, clkhigp]"
+}
+params {
+  key: "refreshCache"
+  value: "false"
+}
+params {
+  key: "handlerId"
+  value: "app-jx-material"
+}
+params {
+  key: "p13n.SmartStoreSkuIndexRecaller.featureConfigs"
+  value: "{JX_CID3_LONGTERM_PG = {name = recsys_p_u_to_c3_pg,weight = 1.0,count = 30},JX_C1_PW_LONGTERM_PG = {name = recsys_p_u_to_c3_pg,weight = 1.0,count = 30}, JX_CID3_3D = {name = nl_jxCid3Weight_3d,weight = 1.0,count = 30}, JX_C1_PW_3D = {name = nl_groupPurchasePWWeight_3d,weight = 1.0,count = 30}}"
+}
+params {
+  key: "forceToExperimentId"
+  value: "0"
+}
+params {
+  key: "PsRanker.rankModules.SKU.featureToken"
+  value: "token_featurelog_hp_clk_ord_pg_main_price-800"
+}
+params {
+  key: "leastEffort"
+  value: "false"
+}
+params {
+  key: "shutdown_feature_log"
+  value: "true"
+}
+params {
+  key: "expId"
+  value: "100"
+}
+params {
+  key: "randomOrder"
+  value: "true"
+}
+params {
+  key: "overallL4Switch"
+  value: "true"
+}
+params {
+  key: "filterOrder"
+  value: "true"
+}
+params {
+  key: "evictFromLogAnalysis"
+  value: "false"
+}
+params {
+  key: "SoftStockFilterRuler.rulerSwitch"
+  value: "true"
+}
+params {
+  key: "OrderFilterRbcidInfoRequestModifier.ordBehaviorType"
+  value: "ordgp"
+}
+params {
+  key: "PsRanker.rankModules.SKU.filterName"
+  value: "\"PurchasedFilter,StockFilter,PinGouPriceFilter,UserDislikeChenFilter,PinGouRegionRestrictFilter\""
+}
+params {
+  key: "uuid.UserProfileRequestModifier.uuidModels"
+  value: "[recsys_p_u_to_c3_pg, nl_jxCid3Weight_3d, nl_groupPurchasePWWeight_3d, nl_jxsucaihp_sku_exposure]"
+}
+params {
+  key: "forceNoExperiment"
+  value: "false"
+}
+params {
+  key: "hint"
+  value: "{\"ci\":\"5\",\"gender\":0,\"page\":1,\"pi\":\"pgMiniProgram\",\"replace_pid\":9101,\"skuFilter\":0,\"tab_id\":[28037414],\"user_layer\":\"\",\"uuid\":\"60027691361155341\",\"visitkey\":\"60027691361155341\"}"
+}
+params {
+  key: "SkuExposureReweightRuler.rulerSwitch"
+  value: "true"
+}
+params {
+  key: "predictorSkipHbase"
+  value: "false"
+}
+params {
+  key: "recRootCacheEnable"
+  value: "false"
+}
+params {
+  key: "cdnCacheTime"
+  value: "5"
+}
+params {
+  key: "orderFilterHistoryOnly"
+  value: "false"
+}
+params {
+  key: "predictorCacheTime"
+  value: "86100"
+}
+encode: EC_UTF8
+-----------------------------------------------
+
+bw.Userbehavior
+
+{"behaviors":{"ORDGP":{"type":"ORDGP","behaviorItems":[],"searchAction":false},"CLKGP":{"type":"CLKGP","behaviorItems":[{"sku":100027006794,"price":0.0,"count":1,"keyword":null,"datetime":1642310829000,"duration":0,"sourceType":"OTHER","expired":false,"cid3":0,"shopId":null,"brandCode":null,"prob":0.0,"histories":null,"cid2":0,"cid1":0,"storeId":0,"venderId":0,"itemTypeValue":0,"event":null,"brandId":null,"carCid":false,"rpFlter":false}],"searchAction":false},"CARTGP":{"type":"CARTGP","behaviorItems":[],"searchAction":false},"SKYGP":{"type":"SKYGP","behaviorItems":[],"searchAction":false}},"multiUserBehaviors":{},"timeoutTag":false}
+
+-----------------------------------------------
+
+
+odin.userprofile.profileMap
+
+recsys_up_gender_2 -> {UnifiedUserProfileGender$UnifiedUserProfileGenderProto@20607} "uid: "624d52e274550ec3a646149bfed5af3c67197417"
+genderType {
+  proper: FEMALE
+  weight: 0.1231
+}
+genderType {
+  proper: MALE
+  weight: 0.97467
+}
+"
+
+recsys_p_u_to_c1_pw_peanut_v2 -> {UnifiedUserProfile3Layers$UnifiedUserProfile3layersProto@20609} "uid: "624d52e274550ec3a646149bfed5af3c67197417"
+layerTwo {
+  proper: "c1pw"
+  layerThree {
+    proper: "1315:12516"
+    value: 5.5475919295628735
+  }
+  layerThree {
+    proper: "1315:48557"
+    value: 4.751929672243825
+  }
+  layerThree {
+    proper: "15248:9284"
+    value: 0.014830108954509648
+  }
+  layerThree {
+    proper: "15248:49082"
+    value: 0.008700268824833865
+  }
+}
+layerTwo {
+  proper: "c1pwsim"
+  layerThree {
+    proper: "1315:19280"
+    value: 5.5476
+  }
+  layerThree {
+    proper: "1315:1177"
+    value: 4.7519
+  }
+  layerThree {
+    proper: "1315:10646"
+    value: 3.3629
+  }
+  layerThree {
+    proper: "1315:44278"
+    value: 2.682
+  }
+  layerThree {
+    proper: "1315:14997"
+    value: 1.1466
+  }
+  layerThree {
+    proper: "1315:17243"
+    value: 0.631
+  }
+  layerThree {
+    proper: "15248:12512"
+    value: 0.0148
+  }
+  layerThree {
+    proper: "15248:19563"
+    value: 0.0117
+  }
+  layerThree {
+    proper: "15248:35938"
+    value: 0.0107
+  }
+  layerThree {
+    proper: "15248"
+
+
+  recsys_up_interest_3 -> {UnifiedUserProfileInterest$UnifiedUserProfileInterestProto@20625} "uid: "624d52e274550ec3a646149bfed5af3c67197417"
+  thirdType {
+    proper: "9728"
+    weight: 6.28849
+  }
+  thirdType {
+    proper: "1349"
+    weight: 4.08998
+  }
+  thirdType {
+    proper: "15275"
+    weight: 0.01122
+  }
+  thirdType {
+    proper: "15257"
+    weight: 0.00936
+  }
+  brandType {
+    proper: "9728:13342"
+    weight: 10.17957
+  }
+  brandType {
+    proper: "1349:13342"
+    weight: 6.98774
+  }
+  brandType {
+    proper: "15275:188790"
+    weight: 0.0146
+  }
+  brandType {
+    proper: "15257:188790"
+    weight: 0.0138
+  }
+  productWordType {
+    proper: "9728:57311"
+    weight: 1.72118
+  }
+  productWordType {
+    proper: "1349:25423"
+    weight: 1.64638
+  }
+  productWordType {
+    proper: "9728:9227"
+    weight: 1.60752
+  }
+  productWordType {
+    proper: "9728:26225"
+    weight: 1.45475
+  }
+  productWordType {
+    proper: "1349:60738"
+    weight: 1.36264
+  }
+  productWordType {
+    proper: "9728:85112"
+    weight: 1.27961
+  }
+  productWordType {
+    proper: "1349:19783"
+    weight: 1.2683
+  }
+  productWordType {
+    proper: "1349:36644"
+    weight: 0.98389
+  }
+  productWordType {
+    proper: "1349:9227"
+    wei"
