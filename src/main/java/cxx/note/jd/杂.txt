@@ -35,7 +35,12 @@ https://blog.csdn.net/qianshangding0708/article/details/98348827    Guava Cache�
 https://www.jianshu.com/p/3d1c9ffb0a28      Builder模式
 https://www.runoob.com/design-pattern/singleton-pattern.html    设计模式
 https://blog.csdn.net/mulinsen77/article/details/84583716    AQS
+https://github.com/ustc-zzzz/HOCON-CN-Translation/blob/master/HOCON.md#%E9%87%8D%E5%A4%8D%E9%94%AE%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%90%88%E5%B9%B6  hocon中文
 
+
+https://github.com/racc/typesafeconfig-guice   typesafeconfig
+https://www.nowcoder.com/discuss/experience?tagId=639&order=1&companyId=0&phaseId=0   牛客面经
+https://github.com/Snailclimb/JavaGuide     git面经
 
 
 
