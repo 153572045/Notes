@@ -1,52 +1,29 @@
 package cxx.note;
 
+import cxx.note.algorithm.sort.QuickSort;
+import cxx.note.algorithm.sort.SortAge;
+
 import java.util.Arrays;
 
 public class Test {
 
+    public static final String b = "abc";
+
     public static void main(String[] args) throws Exception{
-        InsertSort insertSort = new InsertSort();
-        BubbleSort bubbleSort = new BubbleSort();
-        int[] test = new int[]{5,2,14,6,9,63,88,43,14};
-        int[] result = bubbleSort.sort(test);
-        System.out.println(Arrays.toString(result));
+        System.out.println(Math.pow(2,4));
+
     }
 
 }
 
-/**
- * 快排
- */
-class QuickSort {
-
-    public int[] sort(int[] list, int left, int right) {
-        if (left < right) {
-            int pivot = partition(list, left, right);
-            sort(list, left, pivot - 1);
-            sort(list, pivot + 1, right);
-        }
-        return list;
-    }
-
-    private int partition(int[] list, int left, int right) {
-        int pivot = left;
-        int index = left + 1;
-        for(int i = index; i <= right; ++i) {
-            if(list[i] < list[left]) {
-                swamp(list, index, i);
-                index++;
-            }
-        }
-        swamp(list,index - 1, pivot);
-        return index - 1;
-    }
-
-    private void swamp(int[] list, int i, int j) {
-        int temp = list[i];
-        list[i] = list[j];
-        list[j] = temp;
+class FTEST {
+    public static int count = 1;
+    public static void test1() {
+        count++;
+        test1();
     }
 }
+
 
 /**
  * 插入排序
@@ -90,5 +67,42 @@ class BubbleSort {
             }
         }
         return list;
+    }
+}
+
+
+class FindData {
+    public int binarySearch(int[] arr, int data) {
+        int left = 0;
+        int right = arr.length - 1;
+        int mid = 0;
+        if(right == -1) {
+            return 0;
+        }
+        while(left <= right) {
+            mid = (left + right) / 2;
+            if(arr[mid] == data) {
+                return mid;
+            }
+            else if(arr[mid] < data) {
+                left = mid + 1;
+            }
+            else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+}
+
+/**
+ * 递归
+ */
+class Recursion {
+    public int sum(int n) {
+        if(n == 1) {
+            return n;
+        }
+        return n + sum(n - 1);
     }
 }
