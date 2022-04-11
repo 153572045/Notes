@@ -63,11 +63,15 @@ decr key
 incrby key 10  可以设置步长
 append k value  字符串的value，该命令将value追加到原有的值上
 
-字符串，String是Redis最基本的类型，String类型是二进制安全的，意味着可以包含任何数据，比如jpg图片，视频或者序列化的对象，只要能转成字符串的数据都能
-存储，一个redis中字符串的value最多可以是512M
-String的数据结构为简单动态字符串,内部结构类似java的ArrayList,采用预分配冗余空间的方式来减少内存的频繁分配，比如一个字符串的空间为capacity，实际
-长度是len,capacity>len,当len达到一定长度时会扩容capacity，当len小于1M时，扩容的方式是capacity*2,如果超过1M，则扩容一次的方式是capacity+1M,
-最长可以扩容到512M
+--------------------------------------------------------------------------------------------------------
+
+字符串，String是Redis最基本的类型，String类型是二进制安全的，意味着可以包含任何数据，比如jpg图片，视频或者序列化的对象，只要能转成字符
+串的数据都能存储，一个redis中字符串的value最多可以是512M
+String的数据结构为简单动态字符串,内部结构类似java的ArrayList,采用预分配冗余空间的方式来减少内存的频繁分配，比如一个字符串的空
+间为capacity，实际长度是len,capacity>len,当len达到一定长度时会扩容capacity，当len小于1M时，扩容的方式是capacity*2,如果超过1M，则
+扩容一次的方式是capacity+1M,最长可以扩容到512M
+
+--------------------------------------------------------------------------------------------------------
 
 列表类型（List）----单建多值
 简单的字符串列表，按插入排序，底层数据结构是双向链表，对两端的操作性能高，当使用下标操作中间节点性能差。因此链表查询效率较低
@@ -87,8 +91,124 @@ lset k index value 将k下标为index的值设置为value
 在列表元素较少的情况下会用一块连续的内存块来存储数据，这个内存块叫压缩列表(ziplist),ziplist里面的元素紧挨着,当数据多时，再
 用指针把多块ziplist串起来，这样比普通链表节省了一些存放指针的空间。
 
+--------------------------------------------------------------------------------------------------------
+
+集合类型(set)
+对外提供的功能和list类似，特殊之处在于可以自动去重，且是无序的，底层是一个String类型的无序集合，是一个value为null的hash表（只有key? key就
+是value?）添加，删除和查找的复杂度都是O(1)
+常用命令：
+sadd k v1 v2 v3   将一个或多个值加入到集合key中
+smembers k 取出该集合的所有值
+sismember k v  判断k中是否存在v  返回1则存在
+scard k  返回该集合的元素个数
+srem k v1 v2  删除结合中的某个元素
+spop k 随机从该集合中吐出一个值
+srandmember k n 随机从集合中取出n个值，不删除
+smove source destination value  把集合source中的一个值移到destination集合 （集合其实就是k）
+sinter k1 k2 返回两个集合的交集元素
+sunion k1 k2 返回两个集合的并集元素
+sdiff k1 k2 返回两个集合的差集元素（k1中的，不包含k2中的）
+
+数据结构
+set数据结构是dict字典，字典是是用哈希表实现的
+java中的HashSet的内部实现使用的是HashMap，只不过所有的value都指向同一个对象
+Redis的set结构也一样，它的内部也使用hash结构，所有的value都指向同一个内部值
+
+--------------------------------------------------------------------------------------------------------
+
+哈希(Hash)类型
+Redis hash 是一个string类型的field和value的映射表，hash特别适合用于存储对象
+类似Java里面的Map<String, Object>
+其结构如下：
+value是一个Object
+
+key                 value
+
+user            field       value
+                id          1
+                name        张三
+                age         20
 
 
+常用命令：
+hset k field value 给k集合中的field键赋value
+hget k field 从k集合field取出value
+hmset k field1 value1 field2 value2  批量设置hash值
+hexists k field 查看哈表表k中，给定域是否存在
+hkeys key 列出该hash集合的所有field
+hvals key 列出该hash集合的所有value
+hincrby k field increment 为哈希表key中的域field的值加上增量increment  如 hincrby user age 5  增加5岁
+hsetnx key field value 将哈希表key中的域field的值设置为value,当且仅当域field不存在
+
+数据结构
+Hash类型的数据结构是两种：ziplist（压缩列表）,hashtable(哈希表),当field-values数量少且长度短时，使用ziplist,否则使用hashtable
+
+--------------------------------------------------------------------------------------------------------
+
+有序集合(Zset,全名SortedSet)
+有序集合zset和普通集合set非常相似，也是一个没有重复元素的字符串集合
+不同之处在于zset为每个成员都关联了一个评分(score),这个评分被用来按照从最低分到最高分的方式排列集合中的元素,集合的成员是唯一的，但是评分
+可以是重复的。
+因为元素是有序的。所以可以快速根据评分或者次序(pasition)来获取一个范围的元素
+访问有序集合的中间元素也非常快，因此可以使用有序集合作为一个没有重复成员的智能列表。
+
+常用命令：带中括号[]表示可有可无
+zadd key score1 value1 score2 value2  将一个或多个member元素及其score值加入到有序集key当中
+zrange key start stop [withscores] 返回有序集key中，下标在start stop之间的元素,带withscores,可以让分数一起和值返回到结果集。
+zrangebyscore key min max [withscores] 从小到大返回有序集合key中所有score介于min和max之间（包括min,max）的成员
+zrevrangebyscore key min max [withscores]  同上，改成从大到小
+zincrby key increment value  为元素的score加上increment    如zincrby topn 50 java
+zrem key value 删除该集合下,指定值的元素
+zcount key min max 统计该集合，分数区间内的元素个数
+zrank key value 返回该值在集合中的排名,从0开始
+
+数据结构
+zset是redis提供的一个特别的数据结构，一方面它等价于java的数据结构Map<String, Double>,可以给每一个元素value赋予一个权重score,另一方面它又
+类似于TreeSet,内部的元素会按照权重score进行排序，可以得到每个元素的名次，还可以通过score的范围来获取元素的列表
+zset底层使用了两种数据结构
+(2)hash, hash的作用就是关联元素value和权重score,保障元素value的唯一性,可以通过元素value找到对应的score值
+(2)跳跃表,跳跃表的目的在于给元素value排序，根据score的范围获取元素列表(即快速找到某个元素)
+
+hash的数据结构如下：
+也就是score变成了value
+
+hash                    field   value
+
+                        java    100
+                        pho     200
+
+
+
+--------------------------------------------------------------------------------------------------------
+
+配置文件
+
+1、Units单位
+配置大小单位，开头定义了一些基本的度量单位,只支持bytes,不支持bit(位) 大小写不敏感
+
+2、INCLUDES
+包含其他文件
+
+3、NETWORK
+网络相关配置
+bind 127.0.0.1  限制为本地链接，只有当前Linux下才能使用,如果在前面加上#号注掉，就可以支持远程链接
+protected-mode  保护模式  可将本机访问的保护模式设置为no
+port  端口号
+tcp-backlog  ?
+timeout 默认0   0表示远不超时，以秒为单位   指不操作redis多久后断开
+tcp-keepalive 默认300s  每隔300秒检查一次链接是否活着，如果不活着则释放链接
+
+4、GENERAL
+daemonize  默认no   是否支持后台启动
+pidfile   存放pid文件的位置，每个实例都会产生一个不同的pid文件， 就是存放进程号的地方
+loglevel 默认notice   表示日志级别  在debug环境中能看到更详细的信息，类似java中的log级别
+logfile  默认空 设置日志的输入文件
+
+5、SECURITY
+可以设置密码，默认没有密码
+后续还有，等继续研究
+
+--------------------------------------------------------------------------------------------------------
 
 
 
