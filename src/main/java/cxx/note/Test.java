@@ -4,28 +4,82 @@ import cxx.note.algorithm.sort.QuickSort;
 import cxx.note.algorithm.sort.SortAge;
 import redis.clients.jedis.Jedis;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Test {
 
-    public static final String b = "abc";
+    public Object core;
 
     public static void main(String[] args) throws Exception{
-        HashMap<String, String> map = new HashMap<>(16);
-        Class clazz = map.getClass();
-        Field threshod = clazz.getDeclaredField("threshold");
-        threshod.setAccessible(true);
-        Method capaticy = clazz.getDeclaredMethod("capacity");
-        capaticy.setAccessible(true);
-        System.out.println("初始容量：" + capaticy.invoke(map) + "初始阈值：" + threshod.get(map) + "元素数量：" + map.size());
-        map.put("abc", "abc");
-        System.out.println("初始容量：" + capaticy.invoke(map) + "初始阈值：" + threshod.get(map) + "元素数量：" + map.size());
-
+        Solution22 solution22 = new Solution22();
+        System.out.println(solution22.lengthOfLongestSubstring("abcabcbbabcdaijklmai"));
     }
 
+
 }
+
+class Solution22 {
+    public String lengthOfLongestSubstring(String s) {
+        int index = 0;
+        Set<Character> set = new HashSet<>();
+        int result = 0;
+        int point = -1;
+        int length = s.length();
+        for(int i = 0; i < length; ++i) {
+            if(i != 0) {
+                set.remove(s.charAt(i - 1));
+            }
+            while(point + 1 < length && !set.contains(s.charAt(point + 1))) {
+                set.add(s.charAt(point + 1));
+                point++;
+            }
+            if(result < set.size()) {
+                result = set.size();
+                index = i;
+            }
+        }
+        String r = s.substring(index, index + result);
+        return r;
+    }
+}
+
+class Solu1 {
+    TreeNode result;
+    TreeNode target;
+    boolean isT = false;
+    public TreeNode levelOrder(TreeNode root) {
+        if(root == null) {
+            return null;
+        }
+        target = root;
+        return null;
+    }
+
+    void cur(TreeNode  node) {
+        if(node == null) {
+            return ;
+        }
+        cur(node.left);
+
+        cur(node.right);
+    }
+}
+
+class TreeNode {
+     int val;
+     TreeNode left;
+     TreeNode right;
+     TreeNode(int x) { val = x; }
+}
+
+
+
+
 
 class Solution {
     public int[] spiralOrder(int[][] matrix) {

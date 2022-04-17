@@ -1,0 +1,66 @@
+
+位运算
+& 与  两者同为1才为1
+| 或  只要有一者为1则为1
+^ 异或  两者不同为1 相同为0
+
+
+一、 1.7HashMap
+
+重要属性和过程：
+1、Entry<K,V>[] table  存储数据的底层数组
+Entry类型包括的属性有 key value hash  next(Entry类型)
+
+2、threshold  扩容的阈值,由capacity * loadFactor计算得来，hashMap中没有capacity的属性，只有capacity方法，返回table.length
+
+3、loadFactor  负载因子，默认是0.75
+
+4、初始化过程
+(1)new一个hashMap并不涉及给table分配内容，分配内存发生在第一次put方法
+(2)调用构造函数会把指定的capacity或默认capacity(16)先赋给threshold(唯一一次threshold == capacity),用于第一次调用put方法时作为初始化table
+的容量，当然会调整成2的n次方  调整方式为  capacity = 1; while(capacity < ini){ capacity << 1},初始化table的时候会把threshold调整到
+正常值。
+
+5、put过程：
+(1)当key = null的情况，整个map只能有一个，之后会发生覆盖，处理方式和非null的key一样
+(2)hash值的计算：用key对象本身的hashCode进行一系列位运算进行扰动,目的是为了减少hash冲突的情况
+(3)indexFor(hash, table.length)方法，寻找元素在table数组中的位置，逻辑上是进行取模操作，实际的计算进行了优化，计算方式：h & (length-1),使用
+这个计算方式的前提是length必须是2的n次幂
+
+6、扩容：看代码
+
+二、 1.8HashMap
+
+1、优化点：
+(1)、tableSizeFor(int init)函数，在构造函数内调用，用于初始化threshold值，用位运算计算出大于等于init的2的n次幂整数，旧版直
+接将init赋给threshold,不管是不是2的n次幂。
+
+(2)、使用尾插法替代1.7的头插法，避免了死循环的问题，但是有可能会导致数据丢失，也不是线程安全的
+优化点是遍历到某个链表的时候，将链表中的元素的hash值和旧容量做一个位运算，分为上半部和下半部两类，上半部的元素插入新数组的位置和旧数组的位置一样，
+下半部是旧数组下标加上旧容量。 这样减少了计算量。
+
+
+三、1.8 ConcurrentHashMap
+
+1、sizeCtl含义
+sizeCtl = 0时，表示数组未初始化，且数组的初始化容量为16
+sizeCtl 为正数时，如果数组未初始化，则记录的是数组的初始容量，如果已经初始化，则记录的是扩容阈值
+sizeCtl 为-1时，表示数组正在进行初始化
+sizeCtl 为非-1的其他负数时，表示数组正在扩容，-(1 + n)表示此时有n个线程正在共同完成扩容操作
+
+2、扰动函数spread()
+进行位运算后和0x7fffffff进行与运算，保证最高位一定是0，即结果一定是正数
+
+
+
+
+
+相关面试题：
+
+1、平时new一个hashmap的时候会传参吗？还是直接不加初始化参数
+答：主要看这个map的用途吧，如果能够大概知道会存多少个数据，就应该赋值一个初始容量，否则一般使用空参。
+
+2、new concurrentHashMap(32)  容量是多少呢？
+64  （会把原值加上原值的一半再加1，再去做tablesizefor方法）
+
+3、concurrentHashMap不允许空值

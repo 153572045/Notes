@@ -42,7 +42,7 @@ https://github.com/racc/typesafeconfig-guice   typesafeconfig
 https://www.nowcoder.com/discuss/experience?tagId=639&order=1&companyId=0&phaseId=0   牛客面经
 https://github.com/Snailclimb/JavaGuide     git面经
 
-
+https://www.oracle.com/java/technologies/javase/javase7-archive-downloads.html#jdk-7u80-oth-JPR   jdk7下载地址
 
 
 
