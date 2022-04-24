@@ -2,25 +2,116 @@ package cxx.note;
 
 import cxx.note.algorithm.sort.QuickSort;
 import cxx.note.algorithm.sort.SortAge;
-import redis.clients.jedis.Jedis;
+import org.apache.curator.RetryPolicy;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.locks.InterProcessLock;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
+import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.ZooDefs;
+import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class Test {
+public class Test1 {
 
-    public Object core;
+    private static final String ADDRESS = "192.168.80.129:2181";
+    private static final String PATH = "/child";
+    private static final RetryPolicy retryPolicy = new ExponentialBackoffRetry(2000, 30000);
 
-    public static void main(String[] args) throws Exception{
-        Solution22 solution22 = new Solution22();
-        System.out.println(solution22.lengthOfLongestSubstring("abcabcbbabcdaijklmai"));
+
+    public static void main(String[] args) throws Exception {
+
+        Thread t = new Thread(() -> {
+            try{
+                System.out.println("start");
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+
+            }
+        });
+        t.start();
+        Thread.sleep(1000);
+        System.out.println(t.getState());
     }
 
 
+    @Test
+    void testGetReadLock3() throws Exception {
+        InterProcessReadWriteLock interProcessReadWriteLock = new InterProcessReadWriteLock(getZkClient(), "/lock1");
+        InterProcessLock interProcessLock = interProcessReadWriteLock.readLock();
+        System.out.println("等待获取读锁对象！");
+
+        interProcessLock.acquire();
+        for(int i = 1; i <=100; i++) {
+            Thread.sleep(3000);
+            System.out.println(i);
+        }
+        interProcessLock.release();
+        System.out.println("等待释放锁");
+    }
+
+    @Test
+    void testGetWriteLock() throws Exception {
+        InterProcessReadWriteLock interProcessReadWriteLock = new InterProcessReadWriteLock(getZkClient(), "/lock1");
+        InterProcessLock interProcessLock = interProcessReadWriteLock.writeLock();
+        System.out.println("等待获取写锁对象！");
+
+        interProcessLock.acquire();
+        for(int i = 1; i <=100; i++) {
+            Thread.sleep(3000);
+            System.out.println(i);
+        }
+        interProcessLock.release();
+        System.out.println("等待释放锁");
+    }
+
+
+    private static CuratorFramework getZkClient() {
+        String zkServerAddress = "192.168.80.129:2181";
+        ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3, 5000);
+        CuratorFramework zkClient = CuratorFrameworkFactory.builder()
+                .connectString(zkServerAddress)
+                .sessionTimeoutMs(5000)
+                .connectionTimeoutMs(5000)
+                .retryPolicy(retryPolicy)
+                .build();
+        zkClient.start();
+        return zkClient;
+}
+}
+
+class Solution32 {
+    private int result = 0;
+    public int maxValue(int[][] grid) {
+        if(grid == null) {
+            return 0;
+        }
+        dif(grid, 0, 0, 0);
+        return result;
+    }
+
+    void dif(int[][] grid, int i, int j, int sum) {
+        if(i >= grid.length || j >= grid[0].length) {
+            return ;
+        }
+        sum+= grid[i][j];
+        if(i == grid.length -1 && j == grid[0].length - 1) {
+            if(sum > result) {
+                result = sum;
+            }
+        }
+        dif(grid, i + 1, j, sum);
+        dif(grid, i, j + 1, sum);
+    }
 }
 
 class Solution22 {
@@ -123,14 +214,6 @@ class Solution {
     }
 }
 
-class FTEST {
-    public static int count = 1;
-    public static void test1() {
-        count++;
-        test1();
-    }
-}
-
 
 /**
  * 插入排序
@@ -199,17 +282,5 @@ class FindData {
             }
         }
         return -1;
-    }
-}
-
-/**
- * 递归
- */
-class Recursion {
-    public int sum(int n) {
-        if(n == 1) {
-            return n;
-        }
-        return n + sum(n - 1);
     }
 }
