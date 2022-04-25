@@ -1,0 +1,48 @@
+1、RandomAccessFile简介
+可以进行定点读写文件，而不局限于从头开始，一般用于多线程下载一个大文件
+
+构造器：RandomAccessFile raf = new RandomAccessFile(File file, String mode);
+mode的值 可选  "r"可读，"w"可写， "rw"可读可写
+重要方法：
+seek(int index);可以将指针移动到某个位置进行读写
+setLength(long len);给写入文件预留空间
+------------------------------------------------------------------------------------------------------------------------
+
+2、FileChannel
+
+可以实现在具体位置读写
+long pos = channel.position();
+channel.position(pos + 123);  有可能造成文件空洞，即中间没有数据
+
+long fileSize = channel.size() 返回关联文件的大小
+
+force()方法，强制将通道内的数据写到磁盘中，应该和流中的flush方法类似
+
+transferTo和transferFrom方法  可实现通道间数据的传输
+具体操作参考FilechannelDemo中的transfer方法，通道件的数据传输结果就是文件间的数据传输
+
+------------------------------------------------------------------------------------------------------------------------
+
+3、Socket
+新的socket通道类既可以运行在非阻塞模式下，也可以阻塞，一个线程即可以管理多个socket连接。
+DatagramChannel和SocketChannel实现定义读和写功能的接口而ServerSocketChannel不实现，ServerSocketChannel负责监听传入的连接和创建新的
+SocketChannel对象，它本身不传输数据。
+SocketChannel其实底层封装了Socket，也有直接可以向buffer读写的功能，而Socket只能通过流进行操作，可以看作SocketChannel本神就是一个类似流的东西，
+但是又封装了Socket
+
+ServerSocketChannel是一个基于通道的socket监听器，和ServerSocket类似，因为增加了通道语义，其实就是包装了ServerSocket，因此可以在非阻塞模式
+下运行由于ServerSocketChannel没有bind()方法，因此需要取出其内部封装的ServerSocket并使用它来绑定到一个端口以开始监听。
+ServerSocketChannel也有accept方法，也可以用其内部的ServerSocket的accept方法，如果是在ServerSocket上调用accept方法，那么就会和其
+他ServerSocket表现一样的行为，即进入阻塞等待并返回一个java.net.Socket，而如果在ServerSocketChannel上调用则会返回SocketChannel类型的对
+象，返回的对象能在非阻塞模式下运行.
+
+SocketChannel介绍
+1、该类是一个连接到TCP网络套接字的通道，就是连接到Socket的通道，该类包装了Socket，可以直接多路复用
+2、注意：对于那些已经存在的Socket则不能用来创建SocketChannel，SocketChannel创建过程中的open方法创建的SocketChannel还没有进行网络连接，需要
+调用connect方法连接到指定的地址上(Socket的构造函数会自动去调用connet方法)
+3、SocketChannel支持阻塞和非阻塞IO模式
+4、SocketChannel支持异步关闭，如果SocketChannel在一个线程上read阻塞，另一个线程对该SocketChannel调用shutdownInput，则读阻塞的线程会返回
+-1表示没有读到任何数据，如果在write阻塞，另一个线程对该对象调用shutdownWrite则写阻塞会抛出异常
+
+------------------------------------------------------------------------------------------------------------------------
+4、

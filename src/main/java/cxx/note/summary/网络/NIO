@@ -1,0 +1,23 @@
+
+NIO(非阻塞IO)
+
+BIO是面向流，NIO是面向缓冲区
+
+主要思想：非阻塞指的是IO事件本身不阻塞(线程不在IO上进行阻塞，即不用阻塞在read方法上)，但是获取IO事件的select()方法是需要阻塞等待的(bio是阻塞
+在io读写上，nio是阻塞在Io事件的获取上，一种是全部线程的阻塞，一种是单个线程的阻塞等待)，因为没有事件就没有IO，从高层次看IO就不阻塞，也就是说只有
+IO已经发生了我们才去评估IO是否阻塞，但是select方法发生阻塞的时候就没有IO事件发生，也谈不上IO阻塞，因此NIO的本质是延迟IO操作到真正发生IO的时候，
+而不是像BIO只要IO流打开就一直等待IO操作
+一个线程就可以管理多个socket连接
+
+一、基本构建
+(1) Channel: Channel通道可以同时用于读和写，因为Channel是全双工的，比流更好地映射到底层操作系统的API，而NIO就是通过Channel封装了对数据源的
+操作(数据源可以是文件或者是网络socket)，更具体地讲，Channel用于在字节缓冲区和位于通道另一侧的实体(可以是文件或套接字)之间进行有效的数据传输。
+向Channel获取或写入数据必须先通过Buffer对象进行处理。
+具体类实现：
+1、FileChannel  从文件中读写数据
+2、DatagramChannel  能通过UDP读写网络中的数据
+3、SocketChannel  能通过TCP读写网络中的数据
+4、ServerSocketChannel  可以监听新进来的TCP连接，像Web服务器那样，对每一个新进来的连接都会创建一个SocketChannel
+
+(2)
+(3)

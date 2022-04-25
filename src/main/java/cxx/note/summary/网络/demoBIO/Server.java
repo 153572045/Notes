@@ -1,4 +1,4 @@
-package cxx.note.summary.网络.demo;
+package cxx.note.summary.网络.demoBIO;
 
 
 import java.io.BufferedReader;
@@ -22,6 +22,7 @@ public class Server {
         String msg;
         while((msg = br.readLine()) != null) {
             System.out.println("服务端收到: " + msg);
+            Thread.sleep(10000);
         }
 
     }
