@@ -23,7 +23,7 @@ while((msg = br.readLine()) != null) {  //在该处由于调用了readLine()方�
 }
 
 
-二、服务端
+二、客户端
 1、通过Socket对象请求与服务端的连接(即调用connet方法，该方法和服务端的accept方法交互，即在进行TCP的三次握手过程，连接成功后双方都获得一个
 socket对象,便可以用这个对象进行通信，这个对象是对底层TCP/IP协议族实现的一个封装)
 Socket socket = new Socket("127.0.0.1", 9999);  //connet函数应该直接被封装在构造函数中，因此不用调用
