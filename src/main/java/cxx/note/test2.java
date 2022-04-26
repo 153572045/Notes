@@ -1,17 +1,27 @@
 package cxx.note;
 
-import java.util.Arrays;
+import java.net.Socket;
+import java.util.*;
 
 public class test2 {
+        public static void main(String[] args) {
+                Size size = Size.SMALL;
+                System.out.println(size.getName());
+                System.out.println(size.ordinal());
+        }
 
-    public static void main(String[] args) throws Exception {
-        char[] a = new char[] {'1', '2', 'c'};
-        char[] b = Arrays.copyOf(a, 6);
-        b[3] = 0;
-        System.out.println(Arrays.toString(b));
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("abc");
-    }
+}
+
+enum Size
+{
+        SMALL("chen"),BIG("hu");
+        private String name;
+        Size(String name) {
+                this.name = name;
+        }
+        String getName() {
+                return name;
+        }
 }
 
 

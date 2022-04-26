@@ -45,4 +45,7 @@ SocketChannel介绍
 -1表示没有读到任何数据，如果在write阻塞，另一个线程对该对象调用shutdownWrite则写阻塞会抛出异常
 
 ------------------------------------------------------------------------------------------------------------------------
-4、
+4、DatagramChannel
+正如SocketChannel对应Socket一样，每个DatagramChannel对象也有一个关联的DatagramSocket对象，DatagramChannel是无连接的，每个数据报(datagram)
+都是一个自包含的实体，拥有他自己的目标地址及不依赖其他数据报的数据负载，与面向流的socket不同，DatagramChannel可以发送单独的数据报给不同的目标地址。
+同样，DatagramChannel对象也可以接收来自任意地址的数据包。每个到达的数据报都含有关于它来自何处的信息(源地址)

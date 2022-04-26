@@ -9,7 +9,6 @@ public class Client2 {
 
     public static void main(String[] args) throws Exception{
         Socket socket = new Socket("127.0.0.1", 9999);
-
         OutputStream os = socket.getOutputStream();
         PrintStream ps = new PrintStream(os);
         Scanner sc = new Scanner(System.in);

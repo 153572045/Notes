@@ -29,18 +29,6 @@ public class Test1 {
 
 
     public static void main(String[] args) throws Exception {
-
-        Thread t = new Thread(() -> {
-            try{
-                System.out.println("start");
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-
-            }
-        });
-        t.start();
-        Thread.sleep(1000);
-        System.out.println(t.getState());
     }
 
 
