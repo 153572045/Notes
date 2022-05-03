@@ -16,7 +16,7 @@ public class SocketChannelDemo {
         socketChannel.isOpen();socketChannel.isConnected();socketChannel.inConnectionPending();是否正在进行连接
         socketChannel.finishConnect();是否已经完成连接
          */
-
+        System.out.println(socketChannel.finishConnect());
         socketChannel.configureBlocking(true);
 
         ByteBuffer buf = ByteBuffer.allocate(16);

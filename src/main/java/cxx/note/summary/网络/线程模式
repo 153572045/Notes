@@ -1,0 +1,41 @@
+
+目前网络编程存在的线程模式有
+1、传统的阻塞I/O服务模式
+2、Reactor模型
+
+
+Recator模型可分为以下三种：
+
+一、单Reactor单线程   用一个selector去监听连接和IO读写事件,包括对事件的处理都在一个线程内完成
+在处理高并发时有瓶颈，当请求数太多的时候将无法支撑，会发生阻塞
+当Handler在处理某个连接上的业务时，整个进程无法处理其他连接事件，很容易导致性能瓶颈。
+
+二、单Reactor多线程   也是用一个selector去监听连接和IO读写事件，在处理IO事件或其他业务时用另外的线程(池)去处理
+与单线程的差别在于Handler是在其他线程上跑的
+
+三、主从Reactor多线程  netty基于该模型进行改进
+分了三层
+主Reactor处理连接事件
+subReactor处理IO的读写
+具体的业务处理分配给Worker线程池
+
+
+四、netty的线程模型
+
+1、Netty抽象出两组线程池  Boss Group和Worker Group  (这两者的类型都是NioEventLoopGroup)
+Boss Group专门负责接收客户端的连接，WorkerGroup专门负责网络的读写
+2、NioEventLoopGroup相当于一个事件循环组，这个组中含有多个事件循环，每个事件循环是NioEventLoop
+3、NioEventLoop表示一个不断循环的执行处理任务的线程，每个NioEventLoop都有一个selector，用于
+监听绑定在其上的socket的网络通讯
+4、每个Boss NioEventLoop执行的步骤有3步
+(1)轮询access事件
+(2)处理access事件，与client建立连接，生成NioSocketChannel,并将其注册到某个Worker NioEventLoop
+上的selector
+(3)处理任务队列中的其他任务，即runAllTasks
+5、每个Worker NioEventLoop循环执行的步骤
+(1)轮询read,write事件
+(2)处理IO事件，即read,write事件，在对应的NioSocketChannel上处理
+(3)处理任务队列中的其他任务,即runAllTasks
+6、每个Worker NioEventLoop处理业务时，会使用Pipeline(管道)，pipeline中包含
+了channel，即通过pipeline可以获取到对应的通道，管道中维护了很多的处理器，有内置
+和自定义，用来处理数据。

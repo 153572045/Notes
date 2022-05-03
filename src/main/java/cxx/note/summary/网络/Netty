@@ -1,0 +1,41 @@
+由于NIO的学习成本比较高，开发流程比较繁琐，开发速度比较慢，所以有了Netty
+Netty: 异步的，基于事件驱动的网络应用框架，可用来快速开发高性能的服务器端和客户端
+Netty可以帮你快速、简单的开发一个网络应用，相当于简化和流程化了NIO的开发过程
+------------------------------------------------------------------------------------------------------------------------
+核心
+1、可扩展的事件模型
+2、交互Api
+3、零拷贝
+
+支持的协议
+http & WebSocket
+SSL
+Protobuf  用来解码编码
+
+支持的传输服务
+Socket(TCP)
+Datagram(UDP)
+HTTP Tunnel等
+------------------------------------------------------------------------------------------------------------------------
+netty的线程模型
+1、Netty抽象出两组线程池  Boss Group和Worker Group  (这两者的类型都是NioEventLoopGroup)
+Boss Group专门负责接收客户端的连接，WorkerGroup专门负责网络的读写
+2、NioEventLoopGroup相当于一个事件循环组，这个组中含有多个事件循环，每个事件循环是NioEventLoop
+3、NioEventLoop表示一个不断循环的执行处理任务的线程，每个NioEventLoop都有一个selector，用于
+监听绑定在其上的socket的网络通讯
+4、每个Boss NioEventLoop执行的步骤有3步
+(1)轮询access事件
+(2)处理access事件，与client建立连接，生成NioSocketChannel,并将其注册到某个Worker NioEventLoop
+上的selector
+(3)处理任务队列中的其他任务，即runAllTasks
+5、每个Worker NioEventLoop循环执行的步骤
+(1)轮询read,write事件
+(2)处理IO事件，即read,write事件，在对应的NioSocketChannel上处理
+(3)处理任务队列中的其他任务,即runAllTasks
+6、每个Worker NioEventLoop处理业务时，会使用Pipeline(管道)，pipeline中包含
+了channel，即通过pipeline可以获取到对应的通道，管道中维护了很多的处理器，有内置
+和自定义，用来处理数据。
+------------------------------------------------------------------------------------------------------------------------
+pipeline管道和channel通道
+大概可以理解为  pipeline可以关联多个handler,比如水流经过一个管道，会被多个handler进行处理，而通道其实可以理解为数据通道，进行数据的读写
+pipeline的实现本质是一个双向链表，有出栈出栈操作
