@@ -39,3 +39,12 @@ Boss Group专门负责接收客户端的连接，WorkerGroup专门负责网络�
 pipeline管道和channel通道
 大概可以理解为  pipeline可以关联多个handler,比如水流经过一个管道，会被多个handler进行处理，而通道其实可以理解为数据通道，进行数据的读写
 pipeline的实现本质是一个双向链表，有出栈出栈操作
+------------------------------------------------------------------------------------------------------------------------
+异步执行
+如果在对读写处理时耗时太长，可以采用异步处理，即将任务提交到NioEventLoop类中的TaskQueue(任务队列)或scheduledTask中去，这样就不会阻塞在诸如
+channelRead的方法中，具体实现在NettyServerHandler中,目前的理解是以这种方式才有了第三层的概念，即以Worker线程去执行业务，但是执行TaskQueue的线
+程仍然是NioEventLoop,所以要开取真正的第三层，应该要在Handler中再加一层
+
+同样还有scheduleTaskQueue也可以使用
+
+

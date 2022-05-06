@@ -8,6 +8,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.util.CharsetUtil;
 
+import java.util.concurrent.TimeUnit;
+
 /*
 说明
 我们自定义一个Handler需要实现netty规定好的某个HandlerAdapter(规范)
@@ -29,6 +31,27 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         System.out.println("服务器读取线程 " + Thread.currentThread().getName());
         System.out.println("客户端发送的消息是:" + buf.toString(CharsetUtil.UTF_8));
         System.out.println("客户端地址:" + ctx.channel().remoteAddress());
+
+
+//        异步实现1  把任务提交到taskQueue     该方法叫  用户程序自定义的普通任务
+//        ctx.channel().eventLoop().execute(() -> { //提交到当前NiOEventLoop中的taskQueue中去执行
+//            try {
+//                Thread.sleep(10 * 1000); //模拟长时间处理事件
+//                ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~长时间处理",CharsetUtil.UTF_8));
+//            } catch (Exception e) {
+//
+//            }
+//        });
+
+//        异步实现2  把任务提交到scheduleTaskQueue  该方法叫  用户自定义定时任务
+//        ctx.channel().eventLoop().schedule(() -> {
+//            try {
+//                Thread.sleep(10 * 1000); //模拟长时间处理事件
+//                ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~长时间处理",CharsetUtil.UTF_8));
+//            } catch (Exception e) {
+//
+//            }
+//        }, 5, TimeUnit.SECONDS);
     }
 
     @Override

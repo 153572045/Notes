@@ -1,17 +1,30 @@
 package cxx.note;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class test2 {
 
     public static void main(String[] args) {
-        int[] a = {8,11,6,3,45,2,1};
-        HeapSort quickSort = new HeapSort();
-        quickSort.sort(a);
-        System.out.println(Arrays.toString(a));
+        char c = '1';
+        int a = c;
+        System.out.println(a);
+    }
+
+    public static int fib(int n) {
+        if(n == 0 || n == 1) {
+            return 1;
+        }
+        int first = 1;
+        int second = 1;
+        int temp = 0;
+        for(int i = 2; i <= n; ++i) {
+            temp = first + second;
+            first = second;
+            second = temp;
+        }
+        return temp;
     }
 }
 
