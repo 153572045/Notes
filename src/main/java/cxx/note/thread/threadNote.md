@@ -7,6 +7,11 @@ wait()是在线程进入同步方法的时候由于各种原因没法执行（�
 注意：wait()、notify()和notifyAll()都是Object类的final方法，被所有的类继承且不允许重写的方法。特别需要注意的是，不可以在非同步方法中使用
 上述三个方法。
 
+阻塞状态是线程
+阻塞在进入synchronized关键字修饰的方法或代码块（获取锁）时的状态，但是阻塞在
+java.concurrent包中Lock接口的线程状态却是等待状态，因为java.concurrent包中Lock接口对于
+阻塞的实现均使用了LockSupport类中的相关方法。
+
 2、过期的suspend(),resume(),stop()方法
 这三个方法分别对应的功能是线程的暂停，恢复和停止。
 用法是在其他线程（如主线程）对一个线程对象的调用，如 Thread r = ... ;  r.suspend();...;r.resume();

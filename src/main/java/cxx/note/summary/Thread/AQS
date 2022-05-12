@@ -1,0 +1,83 @@
+
+AQS(抽象队列同步器)
+AQS实现了同步器所需要的一些基本功能，比如自定义标准同步状态，FIFO同步队列等，使用AQS可以极大减少开发同步器的工作
+术语：  1、获取同步状态，释放同步状态
+-------------------------------------------------------------------------------------------------------------
+核心思想：
+如果线程请求共享资源，根据state判断资源是否可用，如果可用则将该线程设置为有效的工作线程，然后更改state的值进行锁定，之后如果有其他
+线程也来请求该共享资源,发现同步状态不可用，该线程先被抽象成一个Node节点，然后加入一个FIFO队列进行等待，等待持有锁的线程释放锁，恢复
+state的时候就会去唤醒FIFO队列中的第一个有效线程。
+-------------------------------------------------------------------------------------------------------------
+AQS的子类要么实现了独占功能，要么实现了共享功能，ReentrantReadWriteLock是通过两个内部类去分别实现这两个功能。
+-------------------------------------------------------------------------------------------------------------
+自定义同步器的实现
+在构建自己的自定义同步器时，只需要依赖AQS底层再实现共享资源state的获取与释放操作即可，因此主要实现以下几个方法：
+tryAcquire(int)：独占方式。尝试获取资源，成功则返回true，失败则返回false。
+tryRelease(int)：独占方式。尝试释放资源，成功则返回true，失败则返回false。
+isHeldExclusively()：该线程是否正在独占资源。只有用到condition才需要去实现它。
+tryAcquireShared(int)：共享方式。尝试获取资源。负数表示失败；0表示成功，但没有剩余可用资源；正数表示成功，且有剩余资源。
+tryReleaseShared(int)：共享方式。尝试释放资源，如果释放后允许唤醒后续等待结点返回true，否则返回false。
+-------------------------------------------------------------------------------------------------------------
+AQS的独占模式以及ReentrantLock的实现
+
+AQS在同步模式下主要提供了
+acquire(int arg)和release(int arg)两个方法
+而这两个方法又会调用两个抽象方法tryAcquire(int arg)和tryRelease(int arg)，因此继承自AQS的具体同步器需要实现tryAcquire和tryRelease
+这两个方法，提供获取和释放同步状态的功能。
+
+一、acquire
+tryAcquire的功能是获取同步状态，返回boolean，如果成功acquire则直接返回，如果不成功，acquire会进入同步队列的维护。
+acquire维护同步队列的步骤：
+1、tryAcquire方法为false
+2、调用addWaiter(Node.EXCLUSIVE)，给当前线程创建一个Node对象插入同步队列中，并返回node对象
+3、调用acquireQueued(addWaiter(Node.EXCLUSIVE), arg)方法，以步骤2产生的node对象和arg作为参数，详细如下：
+进入acquireQueued方法后，会先判断pre节点是否head，是的话调用tryAcquire获取同步状态，成功则修改head节点指向自己，
+失败则调用shouldParkAfterFailedAcquire方法，判断或修改pre的waitStatus是否为-1，是的话出去后调用park()进入等待，不是的话修改
+waitStatus为-1，再轮询一次进入等待。
+
+二、release
+release()方法直接调用子类的tryRelease()方法,如果返回false,则解锁失败(不成功的情况是因为一个线程多次加锁，解锁的时候state还没到0)
+ReentrantLock的unlock会调用release方法，传入的arg = 1，
+ReentrantLock中的tryRelease(arg)方法：先将state 减去 arg，如果结果等于0返回true,否则false(会进行线程是否加锁线程的检查)
+tryRelease方法返回true后，会先判断是否存在竞争，即head是否为null或head的waitStatus是否等于0，如果不存在竞争则直接返回，同步状态释放成功
+如果存在竞争，则执行unparkSuccessor(head)方法，该方法先将head的waitStatus置为0，以便后续节点能加锁，之后对后续节点执行unpark进行唤醒
+如果后续节点为null,说明期间有线程失效了(原因？)，那么将从tail开始，往前找到第一个有效线程进行唤醒。
+
+三、Condition
+Condition的实现可以参考并发编程的艺术5.6章节
+condition的实现类是ConditionObject,是AQS(同步器)的内部类，因此每个condition实例都能访问到同步器的方法，即每个condition都有所属的同步器引用
+condition的三要素：
+1、等待队列：每个condition对象都有一个同步队列
+2、等待
+3、通知
+
+流程：
+condition.await();
+1、调用addConditionWaiter()方法，给当前线程构造一个新的Node并尾插到condition的等待队列中
+2、调用fullyRelease()方法，释放所有state并返回state的数量
+3、调用isOnSyncQueue()方法，判断是否在同步队列中，返回false后进入park状态
+4、在park状态若被调用signal()方法，则将在步骤1构建的node插入同步队列中，如下，最终等待被release();
+
+
+
+condition.signal();唤醒等待队列中的第一个节点
+1、如果condition的firstWaiter不为空，则调用doSignal(Node first)
+2、在doSignal()方法中，会调用transferForSignal(first)方法，将firstWaiter放入同步队列，同时会更改node的属性，如将waitStatus改成0，
+然后调用enq(node)将节点插入同步队列，node的Pre的waitStatus改成-1.
+
+
+------------------------------------------------------------------------------------------------------------------------
+公平锁
+
+公平锁和非公平锁的区别在于：
+1、非公平锁的lock()方法，会先进行CAS操作去获取同步状态，失败了再调用acquire()方法，而公平锁是直接调用acquire()方法，因此公平锁存在插队情况，
+当持有同步状态的线程执行release后，还没来得及去调用unparkSuccessor()方法唤醒同步队列中的线程时，可能被新来的线程插队。
+2、tryAcquire()方法有点小区别，公平锁的tryAcquire方法中会调用hasQueuedPredecessors()方法检查同步队列是否为空或者当前线程是否为同步队列的head
+节点的下一个节点，如果都不是则获取失败。
+
+
+
+
+
+
+

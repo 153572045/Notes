@@ -1,32 +1,54 @@
 package cxx.note;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class test2 {
-
-    public static void main(String[] args) {
-        char c = '1';
-        int a = c;
-        System.out.println(a);
-    }
-
-    public static int fib(int n) {
-        if(n == 0 || n == 1) {
-            return 1;
-        }
-        int first = 1;
-        int second = 1;
-        int temp = 0;
-        for(int i = 2; i <= n; ++i) {
-            temp = first + second;
-            first = second;
-            second = temp;
-        }
-        return temp;
+    public static void main(String[] args) throws Exception {
+        Solution1 solution1 = new Solution1();
+        int[] nums = new int[] {2, 4, 6};
+        solution1.exchange(nums);
+        System.out.println(Arrays.toString(nums));
     }
 }
+
+class Solution1 {
+    public int[] exchange(int[] nums) {
+        if(nums.length == 0 || nums.length == 1) {
+            return nums;
+        }
+        int head = 0;
+        int tail = nums.length - 1;
+        while(head != tail) {
+            while(tail > head && nums[tail] % 2 == 0) {
+                tail--;
+            }
+            if(nums[head] % 2 != 1) {
+                swap(nums, head, tail);
+                head++;
+            } else {
+                head++;
+            }
+        }
+        return nums;
+    }
+
+    void swap(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
+    }
+}
+
+
+
 
 class HeapSort {
 

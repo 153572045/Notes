@@ -1,0 +1,3 @@
+
+
+grpc底层使用了netty作为网络通讯框架，网络协议和序列化机制分别是：http2 + protobuf

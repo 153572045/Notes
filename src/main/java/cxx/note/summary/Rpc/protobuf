@@ -1,0 +1,35 @@
+
+官方文档：https://developers.google.com/protocol-buffers/docs/proto
+
+一、Netty本身的编解码机制
+Netty本身自带的ObjectDecoder和ObjectEncoder可以用来实现POJO对象(普通java对象)或各种业务对象的编解码，也有针对字符串的StringEncoder
+和StringDecoder,底层使用的仍然是java序列化技术，效率不高，主要存在以下问题：
+1、无法跨语言 2、序列化后体积太大，是二进制编码的5倍多 3、序列化性能太低
+------------------------------------------------------------------------------------------------------------------------
+二、Protobuf基本介绍----结构化数据格式
+
+1、Protobuf是谷歌发布的开源项目，是一种轻便高效的结构化数据存储格式，可以用于结构化数据的序列化，很适合用来做数据存储或RPC的数据交换格式。
+也就是说，Pb有自己一套更加高效的序列化编码机制,其次，它支持跨语言，跨平台，是以Message的方式来管理数据。
+2、高性能，高可靠性
+3、将类的定义用.proto文件进行描述后(或者说定义服务)，使用protobuf编译器(protoc.exe)能够自动生成代码，即生成相关的.java文件
+
+
+RPC的转型   从http + json --->  tcp + protobuf
+------------------------------------------------------------------------------------------------------------------------
+三、proto文件格式
+syntax = "proto3";  //版本  一般用3
+option java_outer_classname = "StudentPOJO"; 生成的外部类名，同时也是文件名
+
+message Student {  //会在StudentPOJO外部类内生成一个内部类Student
+    int32 id = 1 //1为属性序号
+    string name = 2
+}
+
+不同的语言用不同的编译器进行编译，生成相应的语言类文件
+--------------------------------------------------------------------------------------------------------------------
+四、protobuf在netty中的使用
+1、用proto文件生成相应的类 如上述的Student
+2、然后可以在Handler中的方法中构建要发送的Student实例对象
+3、直接调用ctx.writeAndFlush(student);
+4、需要在pipeline加一个进行编码的Handler:  ch.pipeline().addLast(new ProtobufEncoder());
+解码的时候需要指定对象，如ch.pipeline().addLast(new ProtobufDecoder(StudentPOJO.Student.getDefaultInstance()));

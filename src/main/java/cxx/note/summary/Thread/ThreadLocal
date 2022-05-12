@@ -1,0 +1,33 @@
+
+关于ThreadLocal和WeakReference(软引用)
+
+一、ThreadLocal  线程局部变量
+
+作用：使得各个线程可以使用互相隔离的变量，避免了线程竞争
+
+基本使用：
+ThreadLocal<Object> local = new ThreadLocal<>(); //一般是某个类中的静态变量
+
+local.set(object) //在各自的线程中调用
+local.get();      //在各自的线程中调用
+
+
+基本原理：
+在每个线程Thread实例中都有一个实例域ThreadLocalMap,该类是ThreadLocal的内部静态类，当线程调用任一个ThreadLocal实例(get或set方法)，
+则会对该ThreadLocalMap属性进行初始化， 之后将该ThreadLocal作为key，set方法中的value作为值存到ThreadLocalMap中的table中，类似
+hashMap,table的元素类型是Entry，Entry的key是一个弱引用，即Entry继承自WeakRerence类。 这样做的目的是当外部没有任何引用ThreadLocal的
+强引用的时候，该key会被回收，防止内存泄漏，因此在ThreadLocalMap中的set(),get(),remove()都会调用检查table是否存在key是否为空的元素。
+
+发生内存泄漏的原因：当外部已经不存在某个ThreadLocal实例的引用时，且使用其他ThreadLocal时只调用get()方法，且调用时相应的key都存在，那么
+就永远不会去处理内存泄漏。
+
+https://juejin.cn/post/6959333602748268575
+------------------------------------------------------------------------------------------------------------------------
+
+二、WeakReference
+
+基本用法：
+Integer a = 500;
+WeakReference<Integer> weakReference = new WeakReference<>(a);
+a = null;
+System.gc()   //此时weakReference中的reference将被回收，注意Integer要大于常量池中的范围
