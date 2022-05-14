@@ -1,25 +1,54 @@
 package cxx.note;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class test2 {
     public static void main(String[] args) throws Exception {
-        Solution1 solution1 = new Solution1();
-        int[] nums = new int[] {2, 4, 6};
-        solution1.exchange(nums);
-        System.out.println(Arrays.toString(nums));
+        Pair<Manage> mana = new Pair<>(new Manage(), new Manage());
+        Pair<employee> employeePair = new Pair<>(new employee(), new employee());
     }
 }
 
-class Solution1 {
+class Pair<T> {
+    private T first;
+    private T second;
+    Pair(T F, T S) {
+        first = F;
+        second = S;
+    }
+    T getFirst() {
+        return first;
+    }
+    void setFirst(T first) {
+        this.first = first;
+    }
+}
+
+class employee {
+
+}
+
+class Manage extends employee {
+
+}
+
+
+
+class ArrayAlg
+{
+    public static <T> T getMiddle(T... a)
+    {
+        for(int i = 0; i < a.length; ++i) {
+            System.out.println(a[i].toString());
+        }
+        return null;
+    }
+}
+
+class atest {
+
+}
+
+class Solution1 extends HeapSort{
     public int[] exchange(int[] nums) {
         if(nums.length == 0 || nums.length == 1) {
             return nums;
