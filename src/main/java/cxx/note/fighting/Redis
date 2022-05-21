@@ -34,22 +34,22 @@ Redis默认有16个数据库，一般只使用0号库，指令selete n  切换�
 
 Redis基本用法
 
-基本命令和字符串操作
+String类型的操作和一些基本命令
 keys *  查看库中所有key
 set k v   设置key=k value=v，若k存在 则进行覆盖
 setnx k v  只有k不存在的时候才会设置
 mset k1 v1 k2 v2 k3 v3  设置多个kv对
+mget k1 k2 k3  获取多个value
 msetnx 和上述同理，已存在的K不生效，原子性，只要有一个不成功，则全部失败
 setex k 10 v  加上过期时间设置值
 setrange name n abc  范围设置，在第n个位置设置abc
 get k   获取值
-mget k1 k2 k3  获取多个value
 getrange k 0 3  范围获取，获取从0到3的值，上下限都包含  比如有“abcdef” geterange k 0 3返回abcd
 getset k v 返回原值并将原值设置为新值v
 selete n 切换到第n个数据库
 exists k  查询k是否存在
 type k  查看key是什么类型
-strlen key 获取值的长度
+strlen key 获取String值的长度
 del key 删除指定key数据（直接删除）
 unlink key 同上（非阻塞删除，仅将key从keyspace元数据中删除，真正删除会在后续异步操作）
 expire key 10  设置key的过期时间，单位是秒
@@ -57,7 +57,7 @@ ttl k  查看k还有多少时间过期，-1永不过期，-2已经过期
 dbsize 查看当前数据库的key数量
 flushdb 清除当前库
 flushall 清除所有库内容
-对value进行怎加或减少：
+对value进行增加或减少：
 incr key
 decr key
 incrby key 10  可以设置步长
@@ -67,8 +67,8 @@ append k value  字符串的value，该命令将value追加到原有的值上
 
 字符串，String是Redis最基本的类型，String类型是二进制安全的，意味着可以包含任何数据，比如jpg图片，视频或者序列化的对象，只要能转成字符
 串的数据都能存储，一个redis中字符串的value最多可以是512M
-String的数据结构为简单动态字符串,内部结构类似java的ArrayList,采用预分配冗余空间的方式来减少内存的频繁分配，比如一个字符串的空
-间为capacity，实际长度是len,capacity>len,当len达到一定长度时会扩容capacity，当len小于1M时，扩容的方式是capacity*2,如果超过1M，则
+String的数据结构为简单动态字符串,就是可以修改字符串的值内部结构类似java的ArrayList,采用预分配冗余空间的方式来减少内存的频繁分配，比如一个字符
+串的空间为capacity，实际长度是len,capacity>len,当len达到一定长度时会扩容capacity，当len小于1M时，扩容的方式是capacity*2,如果超过1M，则
 扩容一次的方式是capacity+1M,最长可以扩容到512M
 
 --------------------------------------------------------------------------------------------------------
@@ -90,12 +90,12 @@ lset k index value 将k下标为index的值设置为value
 数据结构：quickList 快速列表
 在列表元素较少的情况下会用一块连续的内存块来存储数据，这个内存块叫压缩列表(ziplist),ziplist里面的元素紧挨着,当数据多时，再
 用指针把多块ziplist串起来，这样比普通链表节省了一些存放指针的空间。
-
+即满足了快速插入和删除的性能，又不会出现太大的空间冗余
 --------------------------------------------------------------------------------------------------------
 
 集合类型(set)
-对外提供的功能和list类似，特殊之处在于可以自动去重，且是无序的，底层是一个String类型的无序集合，是一个value为null的hash表（只有key? key就
-是value?）添加，删除和查找的复杂度都是O(1)
+对外提供的功能和list类似，特殊之处在于可以自动去重，且是无序的，底层是一个String类型的无序集合，是一个value为null的hash表，添加，删除和查找的
+复杂度都是O(1)
 常用命令：
 sadd k v1 v2 v3   将一个或多个值加入到集合key中
 smembers k 取出该集合的所有值
@@ -210,11 +210,128 @@ logfile  默认空 设置日志的输入文件
 
 --------------------------------------------------------------------------------------------------------
 
+Redis事务
+事务是一个单独的隔离操作，事务中的所有命令都会序列化，按顺序执行，事务在执行的过程中不会被其他客户端发来的命令请求打断
+事务的主要作用就是串联多个命令防止别的命令插队
 
+三个基本命令
+1、Multi   组队阶段   组队阶段若有命令失败，执行时整个队列都会被取消
+从输入Multi命令开始，之后输入的命令都会依次进入命令队列中，但不会执行，知道输入Exec之后，Redis会依次执行队列中的命令
+2、discard 放弃组队
+Multi命令后全部命令全部报销
+3、Exec   执行
+依次执行队列中的命令，执行过程中，若有命令执行失败，不会影响其他命令。
 
+事务冲突问题
+1、悲观锁   redis不支持悲观锁
+2、乐观锁  乐观锁适用于多读的应用类型，这样可以提高吞吐量
+原理，在更新数据的时候检查一下其他客户端有没有更新这个数据，使用了版本号机制
 
+乐观锁的使用  ：WATCH key
+在执行multi之前，先执行watch key1 [key2],可以监视一个或多个key，如果在执行之前这个(或这些)key被其他命令所改动，那么事务将被打断，全部命令都失效
 
+Redis事务三特性
 
+1、单独的隔离操作
+事务中的所有命令都会序列化并按顺序执行，事务在执行的过程中不会被其他客户端命令打断
+2、没有隔离级别的概念
+事务提交前的任何指令都不会被执行
+3、不保证原子性
+事务中如果有一条命令执行失败，其他命令仍让会被执行，不会回滚
 
+--------------------------------------------------------------------------------------------------------
+秒杀案例
 
+可以用linux的ab工具模仿并发
+
+基本思路
+创建一个库存key  类型是string
+创建一个秒杀成功的用户key   类型是set
+
+核心逻辑代码
+
+函数入参有prodid商品id和uid用户id
+String  kcKey = "sk:" + prodid + ":qt";
+String userKey = "sk:" + prodid + ":user";
+
+String kc = jedis.get(kcKey);
+if(kc == null) {
+    System.out.println("秒杀还没开始  请稍等")
+}
+//判断重复秒杀
+Boolean sismember = jedis.sismember(userKey, uid);
+if(sismerber) {
+    System.out.println("已秒杀成功，不能重复秒杀")；
+    jedis.close();
+    return false
+}
+//判断库存是否小于1
+if(Integer.parseInt(kc) < 0) {
+    System.out.println("秒杀已结束")；
+    jedis.close();
+    return false
+}
+
+//秒杀过程
+jedis.decr(kcKey);
+jedis.sadd(userKey, uid);
+System.out.println("秒杀成功了");
+jedis.close();
+
+以上的代码有可能会出现两个问题：
+1、库存数量小于0：也就出现了超卖问题
+2、连接超时问题：如果并发量过大，redis服务器无法处理那么多的连接，有的请求就必须等待，有可能会超时导致连接失败
+
+以上问题的解决
+
+1、连接超时问题：
+用连接池解决,节省每次连接redis服务带来的消耗，把连接好的实例反复使用
+获取jedis时不使用直接new的方式 即 Jedis jedis = new Jedis("192.168.44.168",6379);   //每次都会建立redis连接
+采用连接池的方式  Jedis jedis = jedisPoolInstance.getResource();
+
+2、超卖问题：通过乐观锁进行解决
+
+解决方案代码
+
+String  kcKey = "sk:" + prodid + ":qt";
+String userKey = "sk:" + prodid + ":user";
+
+//监视库存
+jedis.watch(kcKey);
+
+String kc = jedis.get(kcKey);
+if(kc == null) {
+    System.out.println("秒杀还没开始  请稍等")
+}
+//判断重复秒杀
+Boolean sismember = jedis.sismember(userKey, uid);
+if(sismerber) {
+    System.out.println("已秒杀成功，不能重复秒杀")；
+    jedis.close();
+    return false
+}
+//判断库存是否小于1
+if(Integer.parseInt(kc) < 0) {
+    System.out.println("秒杀已结束")；
+    jedis.close();
+    return false
+}
+
+//秒杀过程
+//使用事务
+Transaction multi = jedis.multi();
+//组队操作
+multi.decr(kcKey);
+multi.sadd(userKey, uid);
+List<Object> results = multi.exec();
+if(results == null || results.size() == 0) {
+    System.out.println("秒杀失败了......");
+    jedis.close();
+    return false;
+}
+
+System.out.println("秒杀成功了");
+jedis.close();
+
+库存遗留问题  可以用LUA脚本
 

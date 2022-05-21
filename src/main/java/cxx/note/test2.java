@@ -1,48 +1,104 @@
 package cxx.note;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
 
 public class test2 {
-    public static void main(String[] args) throws Exception {
-        Pair<Manage> mana = new Pair<>(new Manage(), new Manage());
-        Pair<employee> employeePair = new Pair<>(new employee(), new employee());
+    public static void main(java.lang.String[] args) throws Exception {
+        HashMap<String, String> map = new HashMap<String, String>(60,0.7f);
+        map.put("abc", "abc");
+        map.get("abc");
+        Integer a = 2;
+        Object b = a;
+        map.size();
     }
 }
 
-class Pair<T> {
-    private T first;
-    private T second;
-    Pair(T F, T S) {
-        first = F;
-        second = S;
+
+
+class MyClassLoader extends ClassLoader {
+    private java.lang.String byteCodePath;
+
+    public MyClassLoader(java.lang.String byteCodePath) {
+        this.byteCodePath = byteCodePath;
     }
-    T getFirst() {
-        return first;
+
+    public MyClassLoader(ClassLoader parent, java.lang.String byteCodePath) {
+        super(parent);
+        this.byteCodePath = byteCodePath;
     }
-    void setFirst(T first) {
-        this.first = first;
-    }
-}
 
-class employee {
-
-}
-
-class Manage extends employee {
-
-}
-
-
-
-class ArrayAlg
-{
-    public static <T> T getMiddle(T... a)
-    {
-        for(int i = 0; i < a.length; ++i) {
-            System.out.println(a[i].toString());
+    @Override
+    protected Class<?> findClass(java.lang.String name) throws ClassNotFoundException {
+        BufferedInputStream bis = null;
+        ByteArrayOutputStream baos = null;
+        try {
+            //获取字节码文件的完整路径
+//            java.lang.String fileName = byteCodePath + name + ".class";
+            java.lang.String fileName = byteCodePath + name;
+            //获取一个输入流
+            bis = new BufferedInputStream(new FileInputStream(fileName));
+            //获取一个输出流
+            baos = new ByteArrayOutputStream();
+            //具体读入数据写出的过程
+            int len;
+            byte[] data = new byte[1024];
+            while ((len = bis.read(data)) != -1) {
+                baos.write(data, 0, len);
+            }
+            //获取内存中完整的字节数组的数据
+            byte[] byteCodes = baos.toByteArray();
+            //调用defineClass(),将字节数组的数据转换为Class的实例
+            Class<?> clazz = defineClass(null, byteCodes, 0, byteCodes.length);
+            return clazz;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (baos != null) {
+                    baos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (bis != null) {
+                    bis.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
 }
+
+class Solution11 {
+    public int findRepeatNumber(int[] nums) {
+        if(nums == null || nums.length == 0) {
+            return -1;
+        }
+        int temp = 0;
+        for(int i = 0; i < nums.length; ++i) {
+            while(nums[i] != i) {
+                if(nums[i] == nums[nums[i]]) {
+                    return nums[i];
+                }
+                temp = nums[i];
+                nums[i] = nums[nums[i]];
+                nums[temp] = temp;
+            }
+        }
+        return -1;
+    }
+}
+
+
+
+
 
 class atest {
 

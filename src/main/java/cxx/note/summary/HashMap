@@ -7,6 +7,8 @@
 
 一、 1.7HashMap
 
+死循环问题：https://juejin.cn/post/6844903554264596487
+
 重要属性和过程：
 1、Entry<K,V>[] table  存储数据的底层数组
 Entry类型包括的属性有 key value hash  next(Entry类型)

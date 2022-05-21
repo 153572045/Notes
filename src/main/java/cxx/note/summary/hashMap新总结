@@ -1,0 +1,43 @@
+
+hashMap1.7
+
+死循环问题：https://juejin.cn/post/6844903554264596487
+
+1、创建一个hashMap
+HashMap<String, String> map = new HashMap<>();
+可以指定初始容量和负载因子，如果没指定，就使用默认容量16和默认负载因子0.75
+不会初始化table,仅仅给负载因子赋值，而容量的值赋给了阈值，因为并没有capacity属性，而此时的table还没初始化，所以暂时赋给threshold
+
+2、table的初始化发生在第一次put方法上
+第一次put先用threshold初始化table，如果不是2的n次幂，则转为大于threshold的最小2的n次幂  如threshold=12 则table的length=16
+
+put方法：
+(1)计算出key的hashcode,在原生的hash方法上加一些位计算进行扰动，减少hash冲突
+(2)调用indexFor计算在table中的位置，逻辑上是取模，计算时用与(&)运算进行优化
+(3)检查该桶位置上是否存在相同的key，有的话就覆盖
+(4)调用addEntry方法添加Entry
+addEntry方法：
+如果size<threshold,则直接用头插法插入到桶上
+如果size>=threshold且桶为null，则仍然直接插在桶上
+如果size>=threshold且桶不为null，则进行扩容后再插入
+(5)扩容resize方法
+new一个容量两倍的新table再调用transfer方法将数据迁移到新table
+执行table = newtable
+
+transfer的逻辑大概如下：
+遍历table各个元素(桶)
+再遍历每个元素的链表，用头插法插入到新的table上
+
+因为用的头插法，所有在并发环境下，扩容时可能会导致元素相互引用，产生循环链表，因此在调用get方法的时候会发生死循环，引起CUP100%的问题
+而且还存在数据丢失问题
+
+
+hashMap1.8
+
+new HashMap()时进行了一点优化：依然用threshold暂存初始capacity,但是会调用tableSizeFor()方法转为2的n次幂
+
+改进点
+1、使用尾插法替代1.7的头插法，避免了死循环的问题，但是有可能会导致数据丢失，也不是线程安全的
+2、优化点是遍历到某个链表的时候，将链表中的元素的hash值和旧容量做一个位运算，分为上半部和下半部两类，上半部的元素插入新数组的位置和旧数组
+的位置一样，下半部是旧数组下标加上旧容量。 这样减少了计算量。
+3、加入红黑树  当一个桶的元素大于8时改用红黑树存储，小于等于6时退化为链表

@@ -1,24 +1,16 @@
 package cxx.note;
 
-import cxx.note.algorithm.sort.QuickSort;
-import cxx.note.algorithm.sort.SortAge;
+import com.google.common.base.Charsets;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.locks.InterProcessLock;
-import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
+import org.apache.curator.framework.recipes.nodes.PersistentNode;
+import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.ZooDefs;
 import org.junit.jupiter.api.Test;
-
-import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.*;
 
 public class Test1 {
@@ -29,7 +21,26 @@ public class Test1 {
 
 
     public static void main(String[] args) throws Exception {
+        RetryPolicy retryPolicy  = new ExponentialBackoffRetry(1000,3);
+        CuratorFramework Client = CuratorFrameworkFactory.builder()
+                .connectString("192.168.80.129:2181")
+                .sessionTimeoutMs(3000)
+                .connectionTimeoutMs(5000)
+                .retryPolicy(retryPolicy)
+                .build();
+        PersistentNode node = new PersistentNode(
+                Client, CreateMode.EPHEMERAL, false,
+                "/789", "127.0.555".getBytes(Charsets.UTF_8));
+        Client.start();
+        Client.blockUntilConnected();
+        node.start();
+        System.in.read();
 
+    }
+    private static void stateChangeHandler(
+            CuratorFramework curatorFramework, ConnectionState connectionState) {
+        System.out.println("发生改变啦");
+        curatorFramework.getConnectionStateListenable().addListener(Test1::stateChangeHandler);
     }
 
 
