@@ -4,16 +4,38 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class test2 {
     public static void main(java.lang.String[] args) throws Exception {
-        HashMap<String, String> map = new HashMap<String, String>(60,0.7f);
-        map.put("abc", "abc");
-        map.get("abc");
-        Integer a = 2;
-        Object b = a;
-        map.size();
+        ReentrantLock lock = new ReentrantLock();
+        lock.lock();
+        lock.unlock();
+
+
+    }
+
+    static String[] getNums(String string) {
+        StringBuffer buffer = new StringBuffer();
+        int len = string.length();
+        for(int i = 0; i < len; ++i) {
+            if('0' <= string.charAt(i) && string.charAt(i) <= '9') {
+                buffer.append(string.charAt(i));
+            } else {
+                if(buffer.length() == 0) {
+
+                } else {
+                    if(buffer.charAt(buffer.length() - 1) == ',') {
+
+                    } else {
+                        buffer.append(',');
+                    }
+                }
+            }
+        }
+        String res = buffer.toString();
+        String[] ress = res.split(",");
+        return ress;
     }
 }
 
@@ -94,14 +116,6 @@ class Solution11 {
         }
         return -1;
     }
-}
-
-
-
-
-
-class atest {
-
 }
 
 class Solution1 extends HeapSort{
