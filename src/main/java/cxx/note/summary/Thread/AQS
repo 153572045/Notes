@@ -54,7 +54,7 @@ condition的三要素：
 流程：
 condition.await();
 1、调用addConditionWaiter()方法，给当前线程构造一个新的Node并尾插到condition的等待队列中
-2、调用fullyRelease()方法，释放所有state并返回state的数量
+2、调用fullyRelease()方法，释放所有state并返回state的数量,这个过程会唤醒等待队列中的第一个线程
 3、调用isOnSyncQueue()方法，判断是否在同步队列中，返回false后进入park状态
 4、在park状态若被调用signal()方法，则将在步骤1构建的node插入同步队列中，如下，最终等待被release();
 

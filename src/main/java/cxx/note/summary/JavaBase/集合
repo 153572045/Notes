@@ -1,0 +1,37 @@
+
+一、队列
+
+Queue<E> 队列接口
+Deque<E> 双端队列接口 继承自Queue<E>   增加了一些除了以下方法的双端队列操作方法
+
+基本方法：
+boolean add(E e)  从尾部添加一个元素，队列满则抛出异常
+boolean offer(E e) 队列满则返回false
+void    put(E e) 阻塞队列的接口，队列满则阻塞
+
+E   remove() 返回队头元素并出队，队列空则跑异常
+E   poll()  队列空则返回null
+E   take()  阻塞队列的接口  队列空则阻塞
+
+E   element()  返回队头元素  空则跑异常
+E   peek()  空则返回null
+
+优先级队列
+PriorityQueue<E>
+内部的数据结构是一个最小堆，可以随机添加数据，在remove的时候数据会从小到大出，但在迭代好像是无法保证顺序
+构造一个优先级队列的时候，元素要么已经实现了Comparable接口，要么需提供一个Comparator对象
+Pr1orityQueue(int initialCapacity, Comparator ? super E> c)
+
+
+二、视图
+
+视图对象实现了Set,List等接口，但本身不对数据进行存储，这样节省了空间和构建数据结构的开销，一般可以对源数据就行修改，但可能不能进行添加或删除。
+
+例子：
+1、map的keySet(),values()和entrySet()等方法都是返回视图对象，这些视图对象可以对源数据进行删除，但无法新增
+2、Arrays.asList(anObject)  返回一个列表视图，可以修改源数据，但无法改变源数组的大小，即删除或增加 也有
+Arrays.asList("A«iy" , "Bob", "Carl ");这种用法
+3、Collections.singleton(anObject)，返回一个单元素的set视图 singletonList返回单元素列表，无法对这个视图对象进行修改
+4、Collections.emptySet()  emptyList()  返回空列表，集
+
+

@@ -1,42 +1,111 @@
 package cxx.note;
 
+import org.apache.zookeeper.Op;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class test2 {
     public static void main(java.lang.String[] args) throws Exception {
-        ReentrantLock lock = new ReentrantLock();
-        lock.lock();
-        lock.unlock();
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 60,
+                TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
 
-
+        ExecutorService threadPool = Executors.newFixedThreadPool(1, r -> {
+            Thread t = new Thread(r);
+            t.setUncaughtExceptionHandler(
+                    (t1, e) -> {
+                        System.out.println(t1.getName() + "线程抛出的异常"+e);
+                    });
+            return t;
+        });
+        threadPool.execute(()->{
+            Object object = null;
+            System.out.print("result## " + object.toString());
+        });
     }
 
-    static String[] getNums(String string) {
-        StringBuffer buffer = new StringBuffer();
-        int len = string.length();
-        for(int i = 0; i < len; ++i) {
-            if('0' <= string.charAt(i) && string.charAt(i) <= '9') {
-                buffer.append(string.charAt(i));
+    static int[] gaotu(int[] arr1, int[] arr2) {
+        int len1 = arr1.length;
+        int len2 = arr2.length;
+        int point1 = 0;
+        int point2 = len2 - 1;
+        while(arr1[point1] != 0) {
+            point1++;
+        }
+        point1 = point1 - 1;
+        int point3 = len1 - 1;
+        while(point3 >= 0 && point1 >= 0 && point2 >= 0) {
+            if(arr1[point1] > arr2[point2]) {
+                arr1[point3--] = arr1[point1--];
             } else {
-                if(buffer.length() == 0) {
-
-                } else {
-                    if(buffer.charAt(buffer.length() - 1) == ',') {
-
-                    } else {
-                        buffer.append(',');
-                    }
-                }
+                arr1[point3--] = arr2[point2--];
             }
         }
-        String res = buffer.toString();
-        String[] ress = res.split(",");
-        return ress;
+        if(point1 < 0) {
+            while(point3 >= 0) {
+                arr1[point3--] = arr2[point2--];
+            }
+        } else {
+            while(point3 >= 0) {
+                arr1[point3--] = arr1[point1--];
+            }
+        }
+        return arr1;
     }
+}
+
+class BigHeap {
+
+    int[] sort(int[] arr) {
+        int len = arr.length;
+        arr = buildHeap(arr, len);
+        for(int i = len - 1; i > 0; i--) {
+            swap(arr, 0, i);
+            heapSwap(arr, 0, --len);
+        }
+        return arr;
+    }
+
+    int[] buildHeap(int[] arr, int len) {
+        for(int i = len / 2 - 1; i >= 0; i--) {
+            heapSwap(arr, i, len);
+        }
+        return arr;
+    }
+
+    void heapSwap(int[] arr, int p, int len) {
+        if(p >= len) {
+            return ;
+        }
+        int maxid = p;
+        int left = p * 2 + 1;
+        int right = left + 1;
+        if(left < len && arr[left] > arr[maxid]) {
+            maxid = left;
+        }
+        if(right < len && arr[right] > arr[maxid]) {
+            maxid = right;
+        }
+        if(maxid != p) {
+            swap(arr, maxid, p);
+            heapSwap(arr, maxid, len);
+        }
+    }
+
+    void swap(int[] arr, int a, int b) {
+        int temp = arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
+    }
+
 }
 
 
