@@ -1,35 +1,18 @@
 package cxx.note;
 
-import org.apache.zookeeper.Op;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 public class test2 {
+    static Map<String, Long> map = new HashMap<>();
     public static void main(java.lang.String[] args) throws Exception {
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 60,
-                TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
-
-        ExecutorService threadPool = Executors.newFixedThreadPool(1, r -> {
-            Thread t = new Thread(r);
-            t.setUncaughtExceptionHandler(
-                    (t1, e) -> {
-                        System.out.println(t1.getName() + "线程抛出的异常"+e);
-                    });
-            return t;
-        });
-        threadPool.execute(()->{
-            Object object = null;
-            System.out.print("result## " + object.toString());
-        });
+        ReentrantLock lock = new ReentrantLock();
+        lock.lock();
+        lock.unlock();
+        Map map = new HashMap();
     }
 
     static int[] gaotu(int[] arr1, int[] arr2) {

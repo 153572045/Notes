@@ -20,7 +20,7 @@ subReactor处理IO的读写
 具体的业务处理分配给Worker线程池
 
 
-四、netty的线程模型
+四、netty的线程模型   主reactor监听并处理连接事件，从reactor监听并处理读写事件
 
 1、Netty抽象出两组线程池  Boss Group和Worker Group  (这两者的类型都是NioEventLoopGroup)
 Boss Group专门负责接收客户端的连接，WorkerGroup专门负责网络的读写
