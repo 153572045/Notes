@@ -1,0 +1,90 @@
+
+
+一、AOP四个关键术语
+
+1、连接点：在一个类中，哪些方法可以被增强，这些方法就称为连接点
+
+2、切入点：实际被增强的方法，称为切入点
+
+3、通知(增强)：实际增强的逻辑部分称为通知，也叫增强，比如打印日志的逻辑，就是通知
+通知有5种类型，分别是：
+(1)前置通知，在方法(即切入点)的前面执行
+(2)后置通知，在方法的后面执行
+(3)环绕通知，在方法的前面和后面都执行
+(4)异常通知，当方法出现异常执行
+(5)最终通知，如果有异常，则后置通知不执行，但是最终通知都会执行
+
+4、切面：是一个动作，把通知应用到切入点的过程称为通知，比如把权限验证的通知加入到登录方法(切入点)的过程称为切面
+
+二、AOP操作
+Spring框架一般都是基于AspectJ来实现AOP操作
+AspectJ不是Spring的组成部分，而是一个独立的AOP框架，一般把AspectJ和Spring框架一起使用，来进行AOP操作
+
+基于AspectJ实现AOP操作
+(1)基于xml配置文件
+(2)基于注解方式实现(常用方式)
+
+在使用前需要的依赖
+除了4个基本依赖之外，还有spring-aop-5.2.6-RELEASE和spring-aspects-5.2.6RELEASE
+此外还有3个额外的包，查一下
+
+切入点表达式
+(1)切入点表达式作用：知道对哪个类里面的哪个方法进行增强
+(2)语法结构
+execution([权限修饰符][返回类型][类的全路径名][方法名称]([参数列表]))
+
+例子1：对com.cxx.dao.BookDao类里面的add方法进行增强
+execution(* com.cxx.dao.BookDao.add(..))  其中*表示所有权限类型，返回类型可以省略
+
+例子2：对com.cxx.dao.BookDao类里面的所有方法进行增强
+execution(* com.cxx.dao.BookDao.*(..))
+
+例子3:对com.cxx.dao包里面的所有类，所有方法做增强
+execution(* com.cxx.dao.*.*(..))
+
+
+具体code
+
+
+1\先定义一个要被增强的类
+
+public class User {
+    public void add() {
+        System.out.println("add..");
+    }
+}
+
+2、再定义一个代理类
+public class UserProxy {
+    public void before() {
+        System.out.println("before..")
+    }
+}
+
+3、进行通知的配置
+(1)在Spring配置文件中，开启注解扫描  :   看视频
+(2)使用注解创建User和UserProxy对象  :分别在User和UserProxy上面加上@Component注解
+(3)在增强类上面添加注解@Aspect
+(4)在Spring配置文件中开启生成代理对象 ： 开视频
+
+4、配置不同类型的通知
+(1)在增强类里面，在作为通知方法上面添加通知类型注解，使用切入点表达式配置
+
+
+结果：
+@Component
+public class User {
+    public void add() {
+        System.out.println("add..");
+    }
+}
+
+@Component
+@Aspect
+public class UserProxy {
+    //Before注解表示作为前置通知
+    @Before(value = "execution(* com.cxx.dao.User.add(..))")
+    public void before() {
+        System.out.println("before..")
+    }
+}
