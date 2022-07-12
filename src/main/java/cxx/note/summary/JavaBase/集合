@@ -20,7 +20,7 @@ E   peek()  空则返回null
 PriorityQueue<E>
 内部的数据结构是一个最小堆，可以随机添加数据，在remove的时候数据会从小到大出，但在迭代好像是无法保证顺序
 构造一个优先级队列的时候，元素要么已经实现了Comparable接口，要么需提供一个Comparator对象
-Pr1orityQueue(int initialCapacity, Comparator ? super E> c)
+PriorityQueue(int initialCapacity, Comparator ? super E> c)
 
 
 二、视图

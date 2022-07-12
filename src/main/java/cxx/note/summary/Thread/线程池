@@ -56,7 +56,7 @@ https://juejin.cn/post/6983213662383112206
 该方法可以概括为三步：
 (1)先调用workerCountOf(c)获取当前线程数，若小于核心线程数，则调用addWorker(command, true)构建一个Worker运行任务
 (2)当前线程数大于最大核心线程数，则判断一下线程池的状态后加入阻塞队列
-(3)调用addWorker(command, true)构建非核心线程去执行任务，如果失败(超过最大线程数)，则调用reject()方法执行饱和策略
+(3)调用addWorker(command, false)构建非核心线程去执行任务，如果失败(超过最大线程数)，则调用reject()方法执行饱和策略
 
 3、addWorker(Runnable firstTask, boolean core)方法
 (1)首先会判断一下线程池的状态，然后根据core判断是否在创建核心线程，若超过相应的最大值则返回false
@@ -83,3 +83,24 @@ newSingleThreadExecutor(单线程的线程池)
 newScheduledThreadPool(定时及周期执行的线程池)
 
 阻塞队列SynchronousQueue：不存放元素，put一个元素会阻塞等待take操作.
+
+
+
+
+机器16核
+futurePool {
+    logic {
+      type = THREAD_POOL
+      core = 64
+      max = 64
+    }
+    rpc {
+      type = THREAD_POOL
+      core = 128
+      max = 128
+    }
+    graph {
+      type = THREAD_POOL
+      core = 64
+      max = 64
+    }

@@ -18,8 +18,8 @@ synchronized的锁是可重入的
 条线程之前先进行一段自旋等待过程)
 2、Lock对象
 实现了java.util.concurrent包中Lock接口的锁对象也可以实现synchronized的功能，相对于synchronized，其拥有的新功能有：
-(1)、等待可中断,即设置一个超时等待(2)、可以实现公平锁，但性能或受到影响(3)、可以绑定多个条件对象，在对象上执行newCondition()方法，对应的休眠和唤醒接口为
-condition.await(),condition.signalAll() (4)可以尝试非阻塞获得锁 (5) 能中断获得锁 第120页
+(1)、等待可中断,即设置一个超时等待(2)、可以实现公平锁，但性能或受到影响(3)、可以绑定多个条件对象，在对象上执行newCondition()方法，对应的休眠和唤
+醒接口为condition.await(),condition.signalAll() (4)可以尝试非阻塞获得锁 (5) 能中断获得锁 第120页
 3、优略势
 Lock更加灵活，在类库层面去实现同步，而synchronized是在语言的层面上去实现同步的
 Lock支持新的功能

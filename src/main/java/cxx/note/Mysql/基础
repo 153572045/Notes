@@ -1,0 +1,139 @@
+
+常用指令
+1、show create database <name>;  查看数据库创建时的sql  字符集默认是utf8的一个子集，表默认和数据库的字符集相同，但可以修改
+2、use <dbName> 切换数据库
+------------------------------------------------------------------------------------------------------------------------
+DDL
+1、create database <name>;  创建数据库
+2、alter database <name> character set utf8;
+3、drop database <name>; 删除数据库   drop database if exists <name>;
+4、create table students( id char(8) not null unique,
+                          name varchar(20) not null,
+                          gender char(2) not null,
+                          age int not null unique,
+                          qq varchar(11) unique)
+char和varchar可以指定最大长度 如  varchar(20) 最大是20个字符长度
+5、desc table <tableName> 查看表结构
+6、drop table (if exists) <tableName> 删除数据表
+7、alter table <tableName> rename to stus;  修改表的名字
+8、alter table <tableName> character set utf8; 修改表的字符集，默认和数据库的字符集一致
+9、alter table <tableName> add 列名 类型；  添加列
+10、alter table <tableName> change 列名 新列名 新类型等...；  修改列的结构或名字，应该是重定义列
+11、alter table <tableName> modify 列名 新类型   修改字段的类型
+12、alter table <tableName> drop 列名   删除列
+------------------------------------------------------------------------------------------------------------------------
+数据类型--大致有三类
+1、数值类型
+tinyint 1byte  特小整形 -128-127或0-255
+smallint 2bytes 小整形 -32768-32767 或 0 - 65535
+mediumint 3bytes 中整形
+int/integer 4bytes 整形  默认整形，更小的整形比较少使用，int不够再用bigint
+bigint  8bytes 大整形
+float   4bytes 单精度
+double  8bytes 双精度  默认浮点类型
+decimal 等研究
+decimal的使用  decimal(10,2) 总共有10位，小数位有2位
+
+2、字符串类型
+char 0-255字节   定长字符串，最多可以存储255个字节 定义类型的时候 如  id char(10) 表示最多可以存放10个字节，不够10个用特殊字符补齐10个
+varchar 0-65535字节 可变字符串  此类型的列最大长度位65535字节   name varchar(20) 名字最大为20个字符(1个汉字2个字符)
+tinyblob 0-255字节 存储二进制字符串    不常用
+blob  0-65535字节 存储二进制字符串     图片 视频转为二进制存储  一般不放在数据库，而是放在服务器上，而数据库存放路径
+mediumblob 更大字节  也是存储二进制字符串
+longblob  更大字节 也是存储二进制字符串
+tinytext    0-255字节   文本数据(字符串，和char比 这个是可变长的,只存储实际数据 不作补齐？)
+text
+mediumtext
+longtext
+用的比较多的也就char varchar  varchar放不下就会用longtext,而其他类型基本不会使用
+
+
+3、日期类型
+也可以用字符串的形式来存储日期，但是在做时间范围内的查找时，不便用来作比较
+
+date  2022-07-06   日期，只能存储年月日
+time  11:10:13     时间，只能存储时分秒
+year  2022         年份
+datatime 2022-07-06 11:12:13   日期+时间  用得最多的类型  在插入数据时，可以用''修饰
+timestamp  20220706111213      日期+时间  时间戳
+------------------------------------------------------------------------------------------------------------------------
+约束
+1、非空约束：列的值必须提供，不能为null
+2、唯一约束: 表中此列的值不能重复，没有语义作用
+3、主键约束：非空+唯一，语义上能够唯一标识一条记录
+自动增长主键:在定义table时,在字段后面加上auto_increment
+联合主键:在定义table时在最后加个primary key(列1,列2)---用的很少,因为当一个数据表中没有合适的列可以作为主键的时候,可以额外添加一个自增长的id列
+4、外键约束：用来建立不同表之间的关联关系
+外键必须是另一张表的主键或唯一列，添加外键数据时，该数据必须存在于另一张表
+创建外键基本语法：
+1、constraint 外键名 foreign key(本表列名) reference 引用表名(列名)   在创建表时使用
+2、alter table tableName add constraint 外键名 foreign key(本表列名) references 引用表名(列名)  在创建表后使用，但需保证外键列没数据
+------------------------------------------------------------------------------------------------------------------------
+DML
+用于完成对数据表中数据的插入、删除、修改操作
+1、插入数据
+insert into <tableName>(colName,...) values(value,...)   (不允许为空的列必须提供数据)
+数据顺序可以和表中不一致,但colName和value顺序必须一致
+insert into <tableName> values()   这个语句必须给所有值提供数据,且顺序和表中的列顺序一致,不过在开发中,最好还是不省略colName列表
+2、删除数据
+delete from <tableName> where conditions;
+delete from <tableName>  全部数据删除
+3、修改数据
+updata <tableName> set colName1=value,colName2=value where conditions;  如果不加where 则全部列都修改
+------------------------------------------------------------------------------------------------------------------------
+DQL
+1、单表查询
+2、多表联合查询
+基本语法
+selete [colName,.../*] from tableName;
+selete [colName,.../*] from tableName where conditions;  条件有=、!=(<>)、>、<、>=、<=、 区间查询用between value1 and value2,闭区间
+between前面可以用not取反
+多条件查询，用逻辑运算符将多个条件连起来，逻辑运算符有and(同时满足) or(满足其中一个) not(不满足)
+
+模糊查询  like
+selete [colName,.../*] from tableName where colName like 'reg'  'reg'是一个表达式 比如可以'%o%'
+%表示任意多个字符，0个也行，%o%表示只要字段中包含o就行
+_表示任意一个字符，比如‘_o%’,则o前面必须要有一个字符，__o%则两个
+示例：1、'%o%'只要包含o即可，2、‘o%’，第一个字符必须是o，3、’%o‘，最后一个字符为o，4、'_o%',第二个字符为o的字符
+
+计算列
+对某列进行一些计算后再显示出来,比如可以用年龄计算出出生年份
+select 2022-age from stus;
+可以给查询结果的列取别名，select 2022-age as 出生年份 from stus;
+
+消除重复行:distinct(在字段前)
+
+排序:order by
+单字段
+selete * from tableName where conditions order by colName asc|desc; 默认是升序排序
+多字段，先满足第一个排序规则，当第一个列值相等再按照第二个排序规则
+selete * from tableName where conditions order by colName1 desc,colName2 asc 先按照字段1降序排序，再按照字段2升序排序
+
+聚合函数
+1、count():selete count(colName) from tableName where conditions;  可以不给条件则全部列都统计
+2、max(): selete max(colName) from tableName where conditions;
+3、min()
+4、sum()
+5、avg()
+
+日期函数
+now()  给出当前日期的函数，直接在insert语句中使用即可
+sysdate()  功能一样
+selete now()  可以检查当前时间
+
+字符串函数：通过sql指令对字符串进行处理
+1、concat(...)将多个字符串连接起来,参数可以是列名也可以是字面值，用,隔开
+select concat('ac','bc');
+2、upper(column)
+3、lower(column)
+4、substring(column,n,m)  从第n个字符开始截m个字符
+
+分组查询
+select * from tableName group by colName;  分组后取第一条记录，所以用*号通常是没啥意义
+一般情况下，select后面的字段应该是分组字段，并且在后面加一个聚合函数列，如：select stu_gender,count(stu_num) from stus group by gender;
+完整语法：select 分组字段/聚合函数 from 表名 [where条件] group by 分组列名 [having条件] [order by 排序字段]
+1、先根据where条件从数据库查询记录。2、对查询的记录进行分组。3、执行having对分组后的数据进行筛选。
+
+分页查询
+selete ...... limit param1 param2   第一个参数表示第一条记录的下标，第二个表示个数
+通用表达式：selete * from tableName [where] limit (pageNum - 1)*pageSize, pageSize

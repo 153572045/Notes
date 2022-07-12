@@ -1,6 +1,7 @@
 
 AQS(抽象队列同步器)
-AQS实现了同步器所需要的一些基本功能，比如自定义标准同步状态，FIFO同步队列等，使用AQS可以极大减少开发同步器的工作
+AQS实现了同步器所需要的一些基本功能，比如自定义标准同步状态，FIFO同步队列等，我们可以使用AQS来实现自定义锁，不过一般情况下主要还是使用
+JUC包下的各种工具类来实现我们的同步功能，比如说常见的ReentrantLock
 术语：  1、获取同步状态，释放同步状态
 -------------------------------------------------------------------------------------------------------------
 核心思想：
@@ -56,14 +57,17 @@ condition.await();
 1、调用addConditionWaiter()方法，给当前线程构造一个新的Node并尾插到condition的等待队列中
 2、调用fullyRelease()方法，释放所有state并返回state的数量,这个过程会唤醒等待队列中的第一个线程
 3、调用isOnSyncQueue()方法，判断是否在同步队列中，返回false后进入park状态
-4、在park状态若被调用signal()方法，则将在步骤1构建的node插入同步队列中，如下，最终等待被release();
+4、在park状态若被调用signal()方法，则将在步骤1构建的node插入同步队列中，然后调用unpark方法唤醒
+5、唤醒后会调用acquireQueued方法去获得锁，如果失败，则重新进入park状态，等待release方法的唤醒
 
 
 
 condition.signal();唤醒等待队列中的第一个节点
 1、如果condition的firstWaiter不为空，则调用doSignal(Node first)
 2、在doSignal()方法中，会调用transferForSignal(first)方法，将firstWaiter放入同步队列，同时会更改node的属性，如将waitStatus改成0，
-然后调用enq(node)将节点插入同步队列，node的Pre的waitStatus改成-1.
+然后调用enq(node)将节点插入同步队列，node的Pre的waitStatus改成-1，然后这个节点会被调用unpark唤醒，之后进入acquireQueued方法去获得
+锁
+
 
 
 ------------------------------------------------------------------------------------------------------------------------
