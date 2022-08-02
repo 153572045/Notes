@@ -68,6 +68,15 @@ timestamp  20220706111213      日期+时间  时间戳
 创建外键基本语法：
 1、constraint 外键名 foreign key(本表列名) reference 引用表名(列名)   在创建表时使用
 2、alter table tableName add constraint 外键名 foreign key(本表列名) references 引用表名(列名)  在创建表后使用，但需保证外键列没数据
+当一个表中某条数据被其他表以外键进行引用，则相应的值无法进行修改或删除，如果要改的话要以以下的步骤去修改
+1、将当前表中的外键相应的值先设置为Null
+2、将引用表外键列中相应的值更新
+3、将当前表中null的记录改回来
+级联修改和删除： 可以不以上面繁琐的方式修改，直接在引用表修改，则使用外键的表会做相应的更新或删除
+在添加外键时加上  ON UPDATE CASCADE ON DELETE CASCADE
+alter table tableName add constraint 外键名 foreign key(本表列名) references 引用表名(列名) ON UPDATE CASCADE ON DELETE CASCADE
+删除外键：alter table tableName drop foreign key 外键名;
+
 ------------------------------------------------------------------------------------------------------------------------
 DML
 用于完成对数据表中数据的插入、删除、修改操作
@@ -137,3 +146,31 @@ select * from tableName group by colName;  分组后取第一条记录，所以�
 分页查询
 selete ...... limit param1 param2   第一个参数表示第一条记录的下标，第二个表示个数
 通用表达式：selete * from tableName [where] limit (pageNum - 1)*pageSize, pageSize
+
+连接查询:join
+1、内连接  inner join  即笛卡尔积
+两种方式
+(1) 使用where 则做笛卡尔积再筛选  selete * from students inner join classes where students.cid = classes.class_id;
+(2) 使用on 先判断条件是否成立，成立再进行连接  效率较高 selete * from students inner join classes on students.cid = classes.id;
+特点：结果只获取两张表中匹配条件成立的数据，任何一张表在另一张表中如果没有找到对应匹配则不会出现在查询结果中
+2、左连接或右连接
+左连接：显示左表的所有数据，如果在右表中存在与左表记录满足匹配条件的数据，则进行匹配；如果右表中不存在匹配数据，则显示为null
+右连接：与左连接相反，显示右表中的所有记录
+
+数据表别名：
+例子：
+selete s.*,c.name   //表示取s表的所有字段和c表的name字段
+from students s
+inner join classes c
+on s.cid = c.id;
+
+子查询/嵌套查询
+概念：先进行一次查询，第一次查询的结果作为第二次查询的源或条件，即第二次查询是基于第一次查询来进行的
+字句用()包起来
+若子查询的结果有多个，则条件应该用in或not in，如果只有一个才用=、!=
+子查询的结果如果是一张表，可以当成虚拟表使用：
+selete * from(selete * from student where cid = 1) t where t.stu_gender='男';
+
+union关键字：将多个查询语句的结果在垂直方向上拼接在一起
+
+

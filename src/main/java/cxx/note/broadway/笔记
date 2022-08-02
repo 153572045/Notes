@@ -1,3 +1,4 @@
 linuxip:192.168.80.128   redis端口6379
+防火墙
 查看状态   systemctl status firewalld
-关闭防火墙      systemctl stop firewalld
+关闭      systemctl stop firewalld

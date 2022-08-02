@@ -1,0 +1,11 @@
+
+
+可以直接导入以下包，这样包含了5个包，可以在依赖处查看
+<groupId>org.springframework</groupId>
+<artifactId>spring-webmvc</artifactId>
+<version>5.2.0.RELEASE</version>
+
+使用aop的依赖
+<groupId>org.aspectj</groupId>
+<artifactId>aspectjweaver</artifactId>
+<version>1.9.4</version>

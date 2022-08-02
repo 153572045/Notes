@@ -1,7 +1,38 @@
 
-一、基于xml文件
+IOC:控制反转指的是创建对象的控制权由程序本身转到IOC容器，也就是说对象创建的时机，生命周期都由IOC容器进行管理，所以IOC容器就是一个创建对象的工厂，
+用户需要什么对象直接从IOC容器拿就可以，这样大大降低系统的耦合程度，提高系统的可维护性和扩展性。
+Spring主要有两种方式实现IOC，可以使用XML配置，也可以使用注解。
+Spring容器在初始化时先读取配置文件，根据配置文件或元数据去创建对象并组织到容器中，程序使用时再从IOC容器中取出需要的对象，实现方式是依赖注入。
+DI的实现方式：1、构造器注入 2、set注入  3、其他方式，可能是反射
+依赖：bean对象的创建依赖于容器
+注入：bean对象中的属性，由容器来注入
+------------------------------------------------------------------------------------------------------------------------
+一、基于xml文件：demo:spring-student
+beans.xml文件放在resource里面
+配置可以在官网找：https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#spring-core
+在spring中，被管理的对象都称为bean,注入是用set进行注入，或者用反射
+如果类没有无参构造，需要用<contructor-arg name="" value="" />来注入，name是有参构造的参数名，还能用下标index的形式注入
 
+<import resource="" />  可以将其他bean.xml导入，合并成一个
 
+注：在配置文件加载的时候，容器中管理的对象就已经初始化了
+如果是单例模式，还没get对象就已经被创建了，用原型模式则是懒创建
+
+spring的三种装配方式
+1、在xml中显示配置
+2、在java中显示配置
+3、隐式的自动装配bean(约定)
+自动装配的方式：
+(1)byName   在bean元素中加上属性  autowire="byName"  则会在bean.xml文件中查找id=属性的set方法的名字，并自动引用，必须保证id全局唯一
+(2)byType   不需要属性名称和id对应，按类型进行查找 必须保证类型全局唯一
+
+可以使用@Autowired注解实现自动装配 (在配置文件中需加<context:annotation-config/>)
+即在xml文件中只要写个最简单的bean，然后在java类对应的属性上面加个@Autowired注解即可  也可以用在set方法上使用，这种方法用反射实现，所以可以不用
+set方法，所以在spring项目中，常用的做法是xml管理bean，而注入用注解
+@Autowired 先用byName再用byType,如果byName不匹配  又有多个对象  则无法使用
+可以配合@Qualifier(value="")使用  value指定bean的id
+
+------------------------------------------------------------------------------------------------------------------------
 二、IOC操作Bean管理(基于注解方式)
 1、使用注解的目的：简化xml配置
 
@@ -9,7 +40,7 @@
 (1) @Component
 (2) @Service
 (3) @Controller
-(4) @Repository
+(4) @Repository   dao层
 以上的注解功能是一样的，都可以用来创建bean实例，而不同命名能让各个主件更加清晰
 
 3、基于注解方式实现对象创建
@@ -21,12 +52,18 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 然后在下面添加
 <context:component-scan base-package="cxx.code.spring.aop"></context:component-scan>  开启组件扫描
 其中base-package的value可以多个，用逗号隔开，在同一个引号内。也可以扩大包的范围将各个包引进来
+<context:annotation-config/>  使用注解实现自动装配
 (3)创建类，并在类上面添加创建对象的注解如@Component(value = "userService"),其中value相当于<bean id=...>中的id，可以省略，若省略则默认为
 类名称，首字母是小写
 
 4、基于注解方式实现属性注入
 (1) @AutoWired : 根据属性类型进行自动装配
 (2) @Qualifier : 根据属性名称进行注入，必须和AutoWired配合使用,当一个接口有多个实现时可以使用
-(3) @Resource  : 可以根据类型注入，也可以根据名称注入，该注解是Java自带的注解，不建议使用
+(3) @Resource  : 可以根据类型注入，也可以根据名称注入，该注解是Java自带的注解，不建议使用  配合name属性指定id
 (4) @Value : 注入普通类型属性
+
+5、作用域
+@Scope("singleton"/“prototype”)  直接在@Component下面加就行
+------------------------------------------------------------------------------------------------------------------------
+使用Java的方式配置Spring,完全不使用xml文件
 

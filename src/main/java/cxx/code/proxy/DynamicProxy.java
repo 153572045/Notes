@@ -2,12 +2,17 @@ package cxx.code.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 public class DynamicProxy implements InvocationHandler {
 
     private Object obj;
     public DynamicProxy(Object obj) {
         this.obj = obj;
+    }
+
+    public Object getProxy() {
+        return Proxy.newProxyInstance(this.getClass().getClassLoader(), obj.getClass().getInterfaces(), this);
     }
 
     @Override
