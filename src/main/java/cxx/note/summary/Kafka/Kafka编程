@@ -36,4 +36,5 @@ ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000))
 默认poll一次拉500条消息，但是指定时间表内即使没有500条，也返回，如果一次就拉到500条，则不需要等待
 
 两次Poll超过30秒，说明消费能力太弱，会被提出消费组
+1
 
