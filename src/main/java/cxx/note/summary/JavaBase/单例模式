@@ -53,7 +53,6 @@ public class Single {
 4、枚举
 public enum SingletonEnum {
     INSTANCE;
-
 }
 枚举：这是实现单例模式的最佳方法。它更简洁，不仅能避免多线程同步问题，而且还自动支持序列化机制，防止反序列化重新创建新的对
 象，绝对防止多次实例化。但是不是延迟加载的。
