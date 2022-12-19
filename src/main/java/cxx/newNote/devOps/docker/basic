@@ -1,0 +1,62 @@
+
+Docker三要素：
+1、镜像——只读的模板，相当于一个root文件系统，由源代码，第三方依赖，配置环境打包而成(可类比为一个类，可以用来创建容器实例)
+2、容器——镜像的实例，也叫容器实例(可类比为一个类对象)，应用程序或服务运行在容器中，容器就类似于一个虚拟化的运行环境，每个容器都是相互隔离的，也就是说，
+可以把容器看作是一个简易版的Linux环境和运行在其中的应用程序
+3、仓库——镜像仓库   官方的公开库为Docker Hub
+
+Docker是一个容器运行载体或管理引擎，我们把应用程序和配置依赖打包好形成一个可交付的运行环境(镜像文件)，之后需要这个服务的时候，就可以通过docker
+客户端创建一个容器实例。
+架构：Docker是一个C/S结构的系统，Docker守护进程运行在主机上，然后通过Socket连接从客户端访问，守护进程从客户端接受命令并管理运行在主机上的容器，可以
+类比于Mysql,我们可以用客户端(navicat)连接运行在后台的mysql守护进程，后台的守护进程接受到客户端的发出的命令后再去进行操作数据。
+
+
+
+Docker命令
+一、帮助启动类命令
+启动 | systemctl start docker
+停止 | systemctl stop docker
+重启 | systemctl restart docker
+查看docker状态 | systemctl status docker
+开机启动 | systemctl enable docker   配置后Linux一开机就自动启动docker
+查看docker概要信息 | docker info
+
+二、镜像命令
+docker images [-a/-q] | 列出本地镜像[包括历史/只列镜像id]     TAG为镜像的版本号  如果不指定则默认使用最新版本 latest,如 ubuntu:latest
+docker search [--limit 5] 镜像名称  | 查找远程库中的镜像[limit可以限制返回个数] OFFICIAL表示官方认证
+docker pull 镜像名称[:TAG] | 从远程库拉镜像
+docker system df | 查看镜像/容器/数据卷所占用的空间，类似linux中的df -h
+docker rmi [-f] 镜像名称/镜像id | 删除镜像[强制]   镜像名称可以多个，空格隔开
+docker rmi -f ${docker images -qa} 强制删除所有镜像  ${}为另一个执行命令
+
+
+三、容器命令
+docker run 镜像名称 |  运行容器——先从本地镜像库搜，如果找到镜像文件则产生容器实例，否则就去Docker Hub上找，找得到则实例化容器，否则报错
+docker run -it [--name=abc] 镜像名称 | 启动交互式容器(前台命令行)   i代表交互，t代表终端,
+如果镜像为ubuntu,进入伪终端后输入exit则退出,容器会停止如果用ctrl+p+q则退出伪终端但容器不停止
+docker ps [-a/-q] | 显示所有运行中的容器 加-a表示历史  ps后加-n 2 表示返回最近两个容器  包括已经停止的
+docker restart 容器ID/名 | 重启容器
+docker stop 容器ID/名 | 停止容器
+docker kill 容器ID/名 | 强制停止容器
+docker rm [-f] 容器id | 删除已经停止的容器,加-f可以删除还在运行的容器
+
+docker run -d 容器名 | 和-it相对应，启动守护式容器(后台服务器，像redis进行后台启动一样)
+后台运行的容器必须有一个前台进程(redis后台启动后会有一个前台进程，所以不会退出)，否则会直接退出，如ubuntu，这样的容器要用-it
+
+docker logs 容器ID | 看容器上打印的日志
+docker top 容器ID | 查看容器内进程  因为每个容器都是一个微型Linux
+docker inspect 容器ID | 查看容器内部细节
+docker exec -it 容器ID /bin/bash | 重新进入退出来的容器(ctrl + p + q)  这个命令重新进入容器后执行exit  不会停止容器
+docker attach 容器ID |  和exec类似  但是进去后执行exit会停止容器
+
+使用redis：
+docker run -d redis 后  再执行 redis-cli -p 6379
+
+备份：
+docker cp 容器ID:容器内路径 目的主机路径 | 复制文件到宿主机   exa docker cp 123456:usr/local/mycptest/contain.txt /tmp/c.txt
+1、docker export 容器ID > 文件名字.tar
+2、cat 文件名.tar | docker import - 镜像用户/镜像名:镜像版本号
+先执行1，再执行2，之后可以会生成一个镜像文件，docker images查看  镜像用户/镜像名:镜像版本号可以乱填
+
+
+
