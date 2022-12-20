@@ -1,0 +1,3 @@
+1、Iaas,paas和saas
+把软件当作服务，就是Saas(Software as a service)，把工具或者框架当做服务，让开发人员调接口就能使用，这个就是Paas(Platform as a service)
+把服务器和网络还有存储设备这种基础设施当作服务，是Iaas(Infrastructure-as-a-Service)。
