@@ -43,6 +43,8 @@ docker rm [-f] 容器id | 删除已经停止的容器,加-f可以删除还在运
 docker run -d 容器名 | 和-it相对应，启动守护式容器(后台服务器，像redis进行后台启动一样)
 后台运行的容器必须有一个前台进程(redis后台启动后会有一个前台进程，所以不会退出)，否则会直接退出，如ubuntu，这样的容器要用-it
 
+docker run -d -p 8080:8080 容器名 -p后面是端口映射
+
 docker logs 容器ID | 看容器上打印的日志
 docker top 容器ID | 查看容器内进程  因为每个容器都是一个微型Linux
 docker inspect 容器ID | 查看容器内部细节
@@ -57,6 +59,29 @@ docker cp 容器ID:容器内路径 目的主机路径 | 复制文件到宿主机
 1、docker export 容器ID > 文件名字.tar
 2、cat 文件名.tar | docker import - 镜像用户/镜像名:镜像版本号
 先执行1，再执行2，之后可以会生成一个镜像文件，docker images查看  镜像用户/镜像名:镜像版本号可以乱填
+
+commit: docker生成镜像文件
+原生的ubuntu容器没有vim,下载命令为：
+apt-get undate
+apt-get install vim
+docker commit -m="描述信息" -a="作者" 容器ID 目标镜像名称[:标签名]
+exam : docker commit -m="vim cmd add ok" -a="zzyy" abcdefg cxx/myubuntu:1.0
+docker的镜像是一层层堆叠的，就像java的类继承一样
+
+容器数据卷————容器内的数据 备份+持久化到宿主机的本地目录(磁盘)中，有点类似redis中的aof或rdb文件
+概念：卷就是目录或文件，存在于一个或多个容器中，由docker挂载到容器，但不属于联合文件系统，因此能够绕过Union File System提供一些用于持续存储或
+共享数据的特征。
+卷的设计目的就是数据的持久化，完全独立于容器的生存周期，因此Docker不会在容器删除时删除其挂载的数据卷
+docker run -it --privileged=true -v /宿主机绝对路径目录：/容器内目录[:ro] 镜像名     |  --privileged=true是用来打开宿主机的权限？ [:r o]限制容器只读不能写
+特点
+1、数据卷可在容器之间共享或重用数据
+2、卷中的更改可以直接实时生效
+3、数据卷中的更改不会包含在镜像的更新中
+4、数据卷的生命周期一直持续到没有容器使用它为止
+docker inspect 容器ID | 查看容器的元信息  里面的Mounts字段可以查看数据卷的挂载信息
+容器间的继承：
+docker run -it --privileged=true --volumes-from u1 --name u2 ubuntu  | u2继承u1的挂载信息
+
 
 
 
