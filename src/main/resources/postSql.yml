@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  pgsql:
+    image: postgres:9.6.29-alpine
+    container_name: db_pgsql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=mydev
+      - POSTGRES_USER=pgadmin
+      - POSTGRES_PASSWORD=12345678
+    volumes:
+      - /Users/xiaoxianchen/data/pgsql/initdb:/docker-entrypoint-initdb.d
+      - /Users/xiaoxianchen/data/pgsql/datadir:/var/lib/postgresql/data
+    restart: always
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: web_pgadmin4
+    ports:
+      - 80:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=153572045@qq.com
+      - PGADMIN_DEFAULT_PASSWORD=12345678
+    links:
+      - pgsql
+    restart: always
+
+
