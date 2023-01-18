@@ -1,0 +1,9 @@
+账号  root
+密码  a2212322
+
+现在远程建立一个仓库，然后再在本地建立一个工程，然后使用命令 git remote add origin http://gitlab地址  关联上去
+重新关联命令：git remote set-url origin
+
+jenkins
+xiaoxian
+2212322

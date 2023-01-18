@@ -1,0 +1,76 @@
+
+基础理论：
+软件开发七大原则：
+1、开闭原则--OCP
+对扩展开放，对修改关闭，(最核心最基本的原则，其他的原则都是为这个原则服务的)如果在扩展系统功能时，如果修改了之前的代码，那么就违背了OCP原则
+2、依赖倒置原则--DIP原则
+上依赖下，则违背依赖倒置原则，即倡导面向接口编程，面向抽象编程，不要面向具体编程
+目标：降低系统的耦合度，提高扩展性
+
+程序违背OCP和DIP，解决的方案可以采用控制反转(IOC Inversion of Control)的编程思想来解决 -- 本质上也是一种设计模式，由于出现得比较新，没有被纳入23中设计模式中
+控制反转两件事：
+    1、不再使用硬编码的方式在程序中new对象，将创建对象的权限交出去
+    2、不再使用硬编码的方式维护对象之间的关系
+控制反转的实现方式有多种，比较重要的是依赖注入(Dependency Injection DI),依赖注入又包括两种常见方式：
+    1、set注入
+    2、构造方法注入
+    依赖 : 对象和对象之间的关联关系  注入:是一种手段  通过这种手段让AB对象产生关系  即容器将一个对象依赖的对象注入到这个对象中
+
+Spring是一个实现了IoC思想的容器
+    1、Spring框架帮我们new对象
+    2、Spring框架帮我们维护对象和对象之间的关系
+----------------------------------------------------------------------------------------------------------------------------------------
+Spring:
+简介：是一个轻量级的控制反转和面向切面的容器框架，致力于简化开发，让程序员只需关注于业务实现，尽可能不关注非业务逻辑代码(事务控制，安全日志等，主要是AOP起作用)
+有八大模块，最核心的两大模块分别是Spring Core(实现了IOC) 和Spring AOP(次核心，也依赖于IOC)
+其他模块有 Spring Web MVC-spring自己提供了一套MVC框架 | Spring Webflux | Spring Web-支持其他MVC框架如struts等 |
+ Spring DAO-提供了单独支持JDBC操作的API 内置的JDBC操作 | Spring ORM-支持常见的ORM框架 MyBatis Hibernate | Spring Context
+
+
+Bean:每一个被spring容器管理的对象
+
+依赖--基础依赖
+<packaging>jar</packaging>
+
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>6.0.0-M2</version>
+</dependency>
+
+使用spring的基本步骤(xml版)：
+1、定义类
+2、配置bean.xml文件
+3、在程序中获取上下文接口对象: ApplicationContext app = new ClassPathXmlApplicationContext("spring.xml")
+ClassPathXmlApplicationContext是ApplicationContext接口的一种实现，专门从类路径中加载Spring配置文件的一个上下文对象
+这行代码只要执行了，就相当于启动了容器，会去解析xml文件，并实例化所有bean对象并放在spring容器中
+之后即可直接使用：Object object = app.getBean("BeanId");  可以加第二个参数 指定class 就不用强转了
+默认的实现原理如下：
+Class clazz = Class.forName("");
+clazz.newInstance() 即无参构造方法，因此必须要存在无参构造方法
+底层实际上是用一个map来管理对象，key是id value是对象
+
+注: ApplicationContext的超级父接口是BeanFactory,即BeanFactory是IoC容器的顶级接口
+总结起来，Spring的底层IoC是 XML解析 + 工厂模式 + 反射机智
+
+Set注入:
+原理—— 底层通过反射机制调用属性对应的set方法然后给属性赋值，这种方式要求属性必须对外提供set方法
+set方法的命令要以set开头 后面没规定，之后在bean.xml文件里面的property属性里进行指定
+例:
+在<bean>元素中写property
+<property name="set方法去掉set后的后续名称，要小写开头" ref=“引用bean的id”/>
+
+内部bean和外部bean,在一个bean的定义中，用ref引用其他bean 则被引用的bean被称为外部bean,而在一个bean的定义中再嵌套定义一个bean 被成为内部
+bean,一般内部bean很少使用
+
+
+构造器注入:
+同样在<bean>元素中指定，用constructor-arg属性
+主要有三种方式
+方式1: 通过index指定参数下标  下面为2个参数的构造函数
+<constructor-arg index = "0" ref = "xxx"/> <constructor-arg index = "1" ref = "yyy"/>
+方式2: 通过指定构造函数的参数名称进行注入
+<constructor-arg name = "vipDao" ref = "xxx"/>  <constructor-arg name = "userDao" ref = "yyy"/>
+方式3: 只需要配上ref属性 实际上是通过类型进行注入
+<constructor-arg ref = "xxx"/>  <constructor-arg ref = "yyy"/>
+-------------------------------------------------------------------------------------------------------------------------
