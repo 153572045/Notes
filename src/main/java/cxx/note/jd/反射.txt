@@ -1,6 +1,6 @@
 								反射
 
-每个类都会被维护一个类对象，Class的对象，这些对象各自描述对应类的结构信息。
+每个类都会被维护一个类对象，Class的对象，这些对象各自描述对应类的结构信息(类的元数据)。
 
 获取类对象的方法有  1、object.getClass()   2、class.class    3、Class.forName(String)
 

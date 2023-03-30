@@ -1,0 +1,17 @@
+
+Z	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(ÍšõP
+`	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(»˜ø¸şÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(µšĞ
+h
+java:S2095"MUse try-with-resources or close this "DatagramChannel" in a "finally" clause.(àÁ‹‹ùÿÿÿÿ
+c
+java:S2095"MUse try-with-resources or close this "DatagramChannel" in a "finally" clause.(¶Á°†
+=
+java:S2189$""Add an end condition to this loop.(˜ïˆÿÿÿÿÿ
+=
+java:S2189""Add an end condition to this loop.(˜ïˆÿÿÿÿÿ
+S	java:S106"9Replace this use of System.out or System.err by a logger.(µæ†÷üÿÿÿÿ
+S	java:S106("9Replace this use of System.out or System.err by a logger.(ğÌÊ¶øÿÿÿÿ
+N	java:S106)"9Replace this use of System.out or System.err by a logger.(ã¤ı
+P
+java:S4719)":Replace Charset.forName() call with StandardCharsets.UTF_8(ã¤ı

@@ -9,6 +9,9 @@
 一、使用volatile变量，也是最轻量级的同步手段
 
 二、非阻塞同步，也就是乐观锁策略，主要由CAS算法支持(CAS操作由sun.misc.Unsafe类实现)  -----待续
+volatile在什么情况下是安全的？
+1、只对volatile变量进行赋值操作，因为赋值操作是原子性
+2、用CAS保证操作原子性
 
 三、互斥同步，也就是加锁，由synchronized方法或Lock对象支持
 1、synchronized:
