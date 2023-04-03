@@ -85,4 +85,10 @@ clinit方法不是必有的，如果一个类没有对静态变量赋值，也�
 3、应用程序类加载器（AppClassLoader）,负责加载用户类路径上的所有类库，程序的默认类加载器
 
 
+总结：自己虽然可以自定义一个叫java.lang.String的类的，但是因为java会检查包名，如果在java.lang包下自定义一个String类，并在改包下启动
+测试不管有没有用到String，只要在自定义的java.lang包下启动就会报“java.lang.SecurityException: Prohibited package name: java.lang”的错
+。但是如果启动类和自定义String不在同一个包下是可以的。但是这样的话，除了类名和java自带的String一样外，就和普通类没啥区别了。就算代码完全和官方的String代
+码一直，但由于双亲委派模型的存在也没有任何鸟用呀，又不会加载自定的String（即便改自定义String的包名也叫java.lang）
+
+
 
