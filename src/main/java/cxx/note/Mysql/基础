@@ -10,7 +10,7 @@ DDL
 4、create table students( id char(8) not null unique,
                           name varchar(20) not null,
                           gender char(2) not null,
-                          age int not null unique,
+                          age int not null unique default 10,
                           qq varchar(11) unique)
 char和varchar可以指定最大长度 如  varchar(20) 最大是20个字符长度
 5、desc table <tableName> 查看表结构
@@ -18,8 +18,8 @@ char和varchar可以指定最大长度 如  varchar(20) 最大是20个字符长�
 7、alter table <tableName> rename to stus;  修改表的名字
 8、alter table <tableName> character set utf8; 修改表的字符集，默认和数据库的字符集一致
 9、alter table <tableName> add 列名 类型；  添加列
-10、alter table <tableName> change 列名 新列名 新类型等...；  修改列的结构或名字，应该是重定义列
-11、alter table <tableName> modify 列名 新类型   修改字段的类型
+10、alter table <tableName> change 列名 新列名 新类型等...；  修改列的结构或名字，应该是重定义列   |   如果原列有值，新类型兼容 则成功 否则报错
+11、alter table <tableName> modify 列名 新类型   修改字段的类型   |  如果原来的值无法兼容新类型 则报错
 12、alter table <tableName> drop 列名   删除列
 ------------------------------------------------------------------------------------------------------------------------
 数据类型--大致有三类
@@ -37,6 +37,7 @@ decimal的使用  decimal(10,2) 总共有10位，小数位有2位
 2、字符串类型
 char 0-255字节   定长字符串，最多可以存储255个字节 定义类型的时候 如  id char(10) 表示最多可以存放10个字节，不够10个用特殊字符补齐10个
 varchar 0-65535字节 可变字符串  此类型的列最大长度位65535字节   name varchar(20) 名字最大为20个字符(1个汉字2个字符)
+char和varchar比较  存取性能 char>varchar 因为varchar肯定需要去计算存储一个实际长度，  如果在数据定长的场景就用char 否则会造成内存浪费
 tinyblob 0-255字节 存储二进制字符串    不常用
 blob  0-65535字节 存储二进制字符串     图片 视频转为二进制存储  一般不放在数据库，而是放在服务器上，而数据库存放路径
 mediumblob 更大字节  也是存储二进制字符串
@@ -59,7 +60,8 @@ timestamp  20220706111213  4个字节    日期+时间  时间戳 具备时区�
 timestamp存储的是一个Int类型，所以有范围限制，大概是1970-2038，而且存储的时候会将客户端插入的数据按照当前的时区转成UTC(世界标准时间)再存储，
 获取的时候反过来操作，因此会性能没有datetime好，特别是在高并发的时候，会涉及到锁，导致上下文切换频繁，cup使用率暴涨。因此不存在时区转换的情况下
 建议使用datetime.
-怎么选？  个人的想法是  如果不是高并发场景，可以用timestamp 省空间，当然有时区转换的需求肯定也用timestamp，如果是高并发场景，用datetime类型
+怎么选？  个人的想法是  如果不是高并发场景，可以用timestamp 省空间，当然有时区转换的需求也可用timestamp，如果是高并发场景，用datetime类型
+实际上时区转换  可以直接用int或bigint存储时间戳  自己在代码里面根据时区转换就行
 ------------------------------------------------------------------------------------------------------------------------
 约束
 1、非空约束：列的值必须提供，不能为null
