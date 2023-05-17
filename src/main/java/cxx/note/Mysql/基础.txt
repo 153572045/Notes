@@ -7,7 +7,7 @@ DDL
 1、create database <name>;  创建数据库
 2、alter database <name> character set utf8;
 3、drop database <name>; 删除数据库   drop database if exists <name>;
-4、create table students( id char(8) not null unique,
+4、create table students( id char(8) not null unique auto_increment,
                           name varchar(20) not null,
                           gender char(2) not null,
                           age int not null unique default 10,
@@ -70,7 +70,7 @@ timestamp存储的是一个Int类型，所以有范围限制，大概是1970-203
 自动增长主键:在定义table时,在字段后面加上auto_increment
 联合主键:在定义table时在最后加个primary key(列1,列2)---用的很少,因为当一个数据表中没有合适的列可以作为主键的时候,可以额外添加一个自增长的id列
 https://blog.csdn.net/weixin_47600880/article/details/122273377  建议使用自增列的原因
-4、外键约束：用来建立不同表之间的关联关系   不推荐使用外键的原因 https://www.cnblogs.com/wangguanjia/p/16243234.html
+4、外键约束：用来建立不同表之间的关联关系   不推荐使用外键的原因 https://www.cnblogs.com/wangguanjia/p/16243234.html 、 https://juejin.cn/post/6963605865513369636
 外键必须是另一张表的主键或唯一列，添加外键数据时，该数据必须存在于另一张表
 创建外键基本语法：
 1、constraint 外键名 foreign key(本表列名) reference 引用表名(列名)   在创建表时使用
@@ -126,7 +126,7 @@ selete * from tableName where conditions order by colName asc|desc; 默认是升
 selete * from tableName where conditions order by colName1 desc,colName2 asc 先按照字段1降序排序，再按照字段2升序排序
 
 聚合函数
-1、count():selete count(colName) from tableName where conditions;  可以不给条件则全部列都统计
+1、count():selete count(colName) from tableName where conditions;  可以不给条件则全部列都统计  count(*)计算全部列 count(字段) 不计算Null
 2、max(): selete max(colName) from tableName where conditions;
 3、min()
 4、sum()
