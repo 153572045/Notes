@@ -8,11 +8,12 @@ Docker三要素：
 Docker是一个容器运行载体或管理引擎，我们把应用程序和配置依赖打包好形成一个可交付的运行环境(镜像文件)，之后需要这个服务的时候，就可以通过docker
 客户端创建一个容器实例。
 架构：Docker是一个C/S结构的系统，Docker守护进程运行在主机上，然后通过Socket连接从客户端访问，守护进程从客户端接受命令并管理运行在主机上的容器，可以
-类比于Mysql,我们可以用客户端(navicat)连接运行在后台的mysql守护进程，后台的守护进程接受到客户端的发出的命令后再去进行操作数据。
+类比于Mysql,我们可以用客户端(navicat)连接运行在后台的mysql守护r进程，后台的守护进程接受到客户端的发出的命令后再去进行操作数据。
 
 
 Docker命令
 一、帮助启动类命令
+systemctl  linux的进程管理命令
 启动 | systemctl start docker
 停止 | systemctl stop docker
 重启 | systemctl restart docker
@@ -39,6 +40,7 @@ docker restart 容器ID/名 | 重启容器
 docker stop 容器ID/名 | 停止容器
 docker kill 容器ID/名 | 强制停止容器
 docker rm [-f] 容器id | 删除已经停止的容器,加-f可以删除还在运行的容器
+docker exec -it [-u 0] 容器ID /bin/bash | 重新进入退出来的容器(ctrl + p + q)  这个命令重新进入容器后执行exit  不会停止容器   -u 0是有root权限
 
 docker run -d 容器名 | 和-it相对应，启动守护式容器(后台服务器，像redis进行后台启动一样)
 后台运行的容器必须有一个前台进程(redis后台启动后会有一个前台进程，所以不会退出)，否则会直接退出，如ubuntu，这样的容器要用-it
@@ -48,14 +50,14 @@ docker run -d -p 8080:8080 容器名 -p后面是端口映射
 docker logs 容器ID | 看容器上打印的日志
 docker top 容器ID | 查看容器内进程  因为每个容器都是一个微型Linux
 docker inspect 容器ID | 查看容器内部细节
-docker exec -it 容器ID /bin/bash | 重新进入退出来的容器(ctrl + p + q)  这个命令重新进入容器后执行exit  不会停止容器
+docker exec -it [-u 0] 容器ID /bin/bash | 重新进入退出来的容器(ctrl + p + q)  这个命令重新进入容器后执行exit  不会停止容器   -u 0是有root权限
 docker attach 容器ID |  和exec类似  但是进去后执行exit会停止容器
-
+67b1989676a9
 使用redis：
 docker run -d redis 后  再执行 redis-cli -p 6379
 
 备份：
-docker cp 容器ID:容器内路径 目的主机路径 | 复制文件到宿主机   exa docker cp 123456:usr/local/mycptest/contain.txt /tmp/c.txt
+docker cp 容器ID:容器内路径  | 复制文件到宿主机   exa docker cp 123456:usr/local/mycptest/contain.txt /tmp/c.txt  也可以反过来
 1、docker export 容器ID > 文件名字.tar
 2、cat 文件名.tar | docker import - 镜像用户/镜像名:镜像版本号
 先执行1，再执行2，之后可以会生成一个镜像文件，docker images查看  镜像用户/镜像名:镜像版本号可以乱填
