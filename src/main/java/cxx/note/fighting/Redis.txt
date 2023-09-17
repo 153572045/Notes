@@ -330,7 +330,7 @@ jedis.close();
 
 解决方案代码
 
-String  kcKey = "sk:" + prodid + ":qt";
+String kcKey = "sk:" + prodid + ":qt";
 String userKey = "sk:" + prodid + ":user";
 
 //监视库存
