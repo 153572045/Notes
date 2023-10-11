@@ -43,7 +43,7 @@ public class Single {
         private final static Single INSTANCE = new Single();
     }
     private Single() {}
-    public Single getSingle() {
+    public static Single getSingle() {
         return Inner.INSTANCE;
     }
 }
