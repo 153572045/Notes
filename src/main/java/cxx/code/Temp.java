@@ -1,10 +1,16 @@
 package cxx.code;
 
 
+import java.lang.management.ThreadMXBean;
+import java.lang.ref.WeakReference;
+
 public class Temp {
 
 
     public static void main(String[] args) throws Exception {
+        Integer a = 12312;
+
+
         System.out.println(myPow(3, 6));
     }
     public static double myPow(double x, int n) {

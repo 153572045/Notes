@@ -1,0 +1,11 @@
+
+
+java:S1130
+"lRemove the declaration of thrown exception 'java.lang.Exception', as it cannot be thrown from method's body.(ÙØ¤Şıÿÿÿÿ8ëîÚ¯ş1
+H
+java:S1481"&Remove this unused "a" local variable.(Ô½œèşÿÿÿÿ8ìîÚ¯ş1
+Z	java:S106"9Replace this use of System.out or System.err by a logger.(²œÆÇúÿÿÿÿ8íîÚ¯ş1
+E
+java:S1125"(Remove the unnecessary boolean literals.(°¿»8îîÚ¯ş1
+Z	java:S106V"9Replace this use of System.out or System.err by a logger.(‡¯±’ùÿÿÿÿ8òîÚ¯ş1
+T	java:S106Y"9Replace this use of System.out or System.err by a logger.(ò„§H8óîÚ¯ş1
